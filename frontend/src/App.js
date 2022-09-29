@@ -1,6 +1,32 @@
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+} from "react-router-dom";
+import styled from "styled-components";
+
+// import {SiteContext} from './ContextProvider';
+import Login from './login';
+import Sidebar from './sidebar';
+import Searchbar from './searchbar'
+
 const App = () => {
-  return (<h1>front end</h1>
+  return (
+    <Router>
+    {/* <SiteContext> */}
+    <LayoutWrapper>
+      <Sidebar />
+      <Login />
+      <Routes>
+        <Route path="/" element={<Searchbar />} />
+      </Routes>
+    </LayoutWrapper>
+    {/* </SiteContext> */}
+  </Router>
   );
 }
 
+
+const LayoutWrapper = styled.div`
+`;
 export default App;

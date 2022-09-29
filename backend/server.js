@@ -3,8 +3,21 @@
 const express = require("express");
 const morgan = require("morgan");
 const helmet = require("helmet");
+const { get } = require("http");
 
 const PORT = 4000;
+
+//=============================================================================
+//imports by source============================================================
+
+const {
+  getServicesAPI, getStream,
+} = require("./apiHandlers")
+
+
+const {
+  getServicesDb
+} = require("./nodeDataHandlers")
 
 //=============================================================================
 //setting up express===========================================================
@@ -29,10 +42,16 @@ express()
 
 //=============================================================================
 //endpoints====================================================================
-.get('/ping', (req,res) => {
-    res.status(200).json({status: 200, message: "ping"})
-})
+//api stuff (all gets)=========================================================
+//get a list of services and the countries they're available in.
+.get('/servicesAPI', getServicesAPI)
+//get a show based on search params
+.get('/show', getStream)
 
+
+//Db stuff=====================================================================
+//gets
+.get('/servicesDb', getServicesDb)
 
 //=============================================================================
 //Boilerplate continued========================================================
