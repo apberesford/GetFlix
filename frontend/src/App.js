@@ -8,7 +8,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 
 import Sidebar from './sidebar';
-import Searchbar from './searchbar'
+import SearchBar from './SearchBar'
 import Header from './header'
 
 const App = () => {
@@ -21,7 +21,7 @@ const App = () => {
           <Header />
           <Sidebar />
           <Routes>
-            <Route path="/" element={<Searchbar />} />
+            <Route path="/" element={<SearchBar />} />
           </Routes>
         </LayoutWrapper>
   </Router>
