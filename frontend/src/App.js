@@ -4,24 +4,26 @@ import {
   Route,
 } from "react-router-dom";
 import styled from "styled-components";
+import { useAuth0 } from "@auth0/auth0-react";
 
-// import {SiteContext} from './ContextProvider';
-import Login from './login';
+
 import Sidebar from './sidebar';
 import Searchbar from './searchbar'
+import Header from './header'
 
 const App = () => {
+  const { user } = useAuth0();
+  user ? sessionStorage.setItem("currentUser", `${user.email}`)
+    : sessionStorage.removeItem("currentUser")
   return (
     <Router>
-    {/* <SiteContext> */}
-    <LayoutWrapper>
-      <Sidebar />
-      <Login />
-      <Routes>
-        <Route path="/" element={<Searchbar />} />
-      </Routes>
-    </LayoutWrapper>
-    {/* </SiteContext> */}
+        <LayoutWrapper>
+          <Header />
+          <Sidebar />
+          <Routes>
+            <Route path="/" element={<Searchbar />} />
+          </Routes>
+        </LayoutWrapper>
   </Router>
   );
 }

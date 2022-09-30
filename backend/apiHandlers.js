@@ -43,9 +43,9 @@ const getStream = async (req,res) => {
         params: {
             country: 'ca',
             service: 'netflix',
-            type: 'series',
-            genre: '18',
-            keyword: 'bojack',
+            type: 'movie',
+            // genre: '18',
+            keyword: 'happy',
             page: '1',
             output_language: 'en',
             language: 'en'
@@ -54,8 +54,9 @@ const getStream = async (req,res) => {
       
       const response = await axios.request(apiOptions)
           console.log(response.data);
-        response ? res.status(200).json({status: 200, message: "shows found", data: response.data})
-        : res.status(404).json({status: 404, message: "nothing found"})
+        //   response ? res.status(200).json({status: 200})
+          response ? res.status(200).json({status: 200, message: "shows found", data: response.data})
+          : res.status(404).json({status: 404, message: "nothing found"})
     } catch(error) {
         return console.log(error)
     }

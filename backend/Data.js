@@ -500,77 +500,154 @@
 // 	"status": 200,
 // 	"message": "shows found",
 // 	"data": {
-// 		"results": [
-// 			{
-// 				"imdbID": "tt3398228",
-// 				"tmdbID": "61222",
-// 				"imdbRating": 88,
-// 				"imdbVoteCount": 151937,
-// 				"tmdbRating": 85,
-// 				"backdropPath": "/y64WatnpvoeudfapTPx9QFVKbqM.jpg",
-// 				"backdropURLs": {
-// 					"300": "https://image.tmdb.org/t/p/w300/y64WatnpvoeudfapTPx9QFVKbqM.jpg",
-// 					"780": "https://image.tmdb.org/t/p/w780/y64WatnpvoeudfapTPx9QFVKbqM.jpg",
-// 					"1280": "https://image.tmdb.org/t/p/w1280/y64WatnpvoeudfapTPx9QFVKbqM.jpg",
-// 					"original": "https://image.tmdb.org/t/p/original/y64WatnpvoeudfapTPx9QFVKbqM.jpg"
-// 				},
-// 				"originalTitle": "BoJack Horseman",
-// 				"genres": [
-// 					16,
-// 					35,
-// 					18
-// 				],
-// 				"countries": [
-// 					"US"
-// 				],
-// 				"year": 2014,
-// 				"firstAirYear": 2014,
-// 				"lastAirYear": 2020,
-// 				"episodeRuntimes": [
-// 					25
-// 				],
-// 				"cast": [
-// 					"Will Arnett",
-// 					"Aaron Paul",
-// 					"Alison Brie",
-// 					"Amy Sedaris",
-// 					"Paul F. Tompkins",
-// 					"Adam Conover",
-// 					"Keith Olbermann"
-// 				],
-// 				"significants": [
-// 					"Raphael Bob-Waksberg"
-// 				],
-// 				"title": "BoJack Horseman",
-// 				"overview": "Meet the most beloved sitcom horse of the 90s - 20 years later. BoJack Horseman was the star of the hit TV show \"Horsin' Around,\" but today he's washed up, living in Hollywood, complaining about everything, and wearing colorful sweaters.",
-// 				"video": "i1eJMig5Ik4",
-// 				"posterPath": "/pB9L0jAnEQLMKgexqCEocEW8TA.jpg",
-// 				"posterURLs": {
-// 					"92": "https://image.tmdb.org/t/p/w92/pB9L0jAnEQLMKgexqCEocEW8TA.jpg",
-// 					"154": "https://image.tmdb.org/t/p/w154/pB9L0jAnEQLMKgexqCEocEW8TA.jpg",
-// 					"185": "https://image.tmdb.org/t/p/w185/pB9L0jAnEQLMKgexqCEocEW8TA.jpg",
-// 					"342": "https://image.tmdb.org/t/p/w342/pB9L0jAnEQLMKgexqCEocEW8TA.jpg",
-// 					"500": "https://image.tmdb.org/t/p/w500/pB9L0jAnEQLMKgexqCEocEW8TA.jpg",
-// 					"780": "https://image.tmdb.org/t/p/w780/pB9L0jAnEQLMKgexqCEocEW8TA.jpg",
-// 					"original": "https://image.tmdb.org/t/p/original/pB9L0jAnEQLMKgexqCEocEW8TA.jpg"
-// 				},
-// 				"seasons": 6,
-// 				"episodes": 76,
-// 				"age": 15,
-// 				"status": 4,
-// 				"tagline": "",
-// 				"streamingInfo": {
-// 					"netflix": {
-// 						"ca": {
-// 							"link": "https://www.netflix.com/title/70300800/",
-// 							"added": 1600283847,
-// 							"leaving": 0
-// 						}
-// 					}
-// 				},
-// 				"originalLanguage": "en"
-// 			}
-// 		],
-// 		"total_pages": 1
+		// "results": [
+			// {
+			// 	"imdbID": "tt3398228",
+			// 	"tmdbID": "61222",
+			// 	"imdbRating": 88,
+			// 	"imdbVoteCount": 151937,
+			// 	"tmdbRating": 85,
+			// 	"backdropPath": "/y64WatnpvoeudfapTPx9QFVKbqM.jpg",
+			// 	"backdropURLs": {
+			// 		"300": "https://image.tmdb.org/t/p/w300/y64WatnpvoeudfapTPx9QFVKbqM.jpg",
+			// 		"780": "https://image.tmdb.org/t/p/w780/y64WatnpvoeudfapTPx9QFVKbqM.jpg",
+			// 		"1280": "https://image.tmdb.org/t/p/w1280/y64WatnpvoeudfapTPx9QFVKbqM.jpg",
+			// 		"original": "https://image.tmdb.org/t/p/original/y64WatnpvoeudfapTPx9QFVKbqM.jpg"
+			// 	},
+			// 	"originalTitle": "BoJack Horseman",
+			// 	"genres": [
+			// 		16,
+			// 		35,
+			// 		18
+			// 	],
+			// 	"countries": [
+			// 		"US"
+			// 	],
+			// 	"year": 2014,
+			// 	"firstAirYear": 2014,
+			// 	"lastAirYear": 2020,
+			// 	"episodeRuntimes": [
+			// 		25
+			// 	],
+			// 	"cast": [
+			// 		"Will Arnett",
+			// 		"Aaron Paul",
+			// 		"Alison Brie",
+			// 		"Amy Sedaris",
+			// 		"Paul F. Tompkins",
+			// 		"Adam Conover",
+			// 		"Keith Olbermann"
+			// 	],
+			// 	"significants": [
+			// 		"Raphael Bob-Waksberg"
+			// 	],
+			// 	"title": "BoJack Horseman",
+			// 	"overview": "Meet the most beloved sitcom horse of the 90s - 20 years later. BoJack Horseman was the star of the hit TV show \"Horsin' Around,\" but today he's washed up, living in Hollywood, complaining about everything, and wearing colorful sweaters.",
+			// 	"video": "i1eJMig5Ik4",
+			// 	"posterPath": "/pB9L0jAnEQLMKgexqCEocEW8TA.jpg",
+			// 	"posterURLs": {
+			// 		"92": "https://image.tmdb.org/t/p/w92/pB9L0jAnEQLMKgexqCEocEW8TA.jpg",
+			// 		"154": "https://image.tmdb.org/t/p/w154/pB9L0jAnEQLMKgexqCEocEW8TA.jpg",
+			// 		"185": "https://image.tmdb.org/t/p/w185/pB9L0jAnEQLMKgexqCEocEW8TA.jpg",
+			// 		"342": "https://image.tmdb.org/t/p/w342/pB9L0jAnEQLMKgexqCEocEW8TA.jpg",
+			// 		"500": "https://image.tmdb.org/t/p/w500/pB9L0jAnEQLMKgexqCEocEW8TA.jpg",
+			// 		"780": "https://image.tmdb.org/t/p/w780/pB9L0jAnEQLMKgexqCEocEW8TA.jpg",
+			// 		"original": "https://image.tmdb.org/t/p/original/pB9L0jAnEQLMKgexqCEocEW8TA.jpg"
+			// 	},
+			// 	"seasons": 6,
+			// 	"episodes": 76,
+			// 	"age": 15,
+			// 	"status": 4,
+			// 	"tagline": "",
+			// 	"streamingInfo": {
+			// 		"netflix": {
+			// 			"ca": {
+			// 				"link": "https://www.netflix.com/title/70300800/",
+			// 				"added": 1600283847,
+			// 				"leaving": 0
+			// 			}
+			// 		}
+			// 	},
+			// 	"originalLanguage": "en"
+			// }
+		// ],
+		// "total_pages": 1
 // 	}
 // }
+
+
+{
+    Id: "email"
+    IsSetUp: true
+    Location: "ca"
+    Subscriptions: ["netflix", "disney"]
+    shows: [			{
+        "imdbID": "tt3398228",
+        "tmdbID": "61222",
+        "imdbRating": 88,
+        "imdbVoteCount": 151937,
+        "tmdbRating": 85,
+        "backdropPath": "/y64WatnpvoeudfapTPx9QFVKbqM.jpg",
+        "backdropURLs": {
+            "300": "https://image.tmdb.org/t/p/w300/y64WatnpvoeudfapTPx9QFVKbqM.jpg",
+            "780": "https://image.tmdb.org/t/p/w780/y64WatnpvoeudfapTPx9QFVKbqM.jpg",
+            "1280": "https://image.tmdb.org/t/p/w1280/y64WatnpvoeudfapTPx9QFVKbqM.jpg",
+            "original": "https://image.tmdb.org/t/p/original/y64WatnpvoeudfapTPx9QFVKbqM.jpg"
+        },
+        "originalTitle": "BoJack Horseman",
+        "genres": [
+            16,
+            35,
+            18
+        ],
+        "countries": [
+            "US"
+        ],
+        "year": 2014,
+        "firstAirYear": 2014,
+        "lastAirYear": 2020,
+        "episodeRuntimes": [
+            25
+        ],
+        "cast": [
+            "Will Arnett",
+            "Aaron Paul",
+            "Alison Brie",
+            "Amy Sedaris",
+            "Paul F. Tompkins",
+            "Adam Conover",
+            "Keith Olbermann"
+        ],
+        "significants": [
+            "Raphael Bob-Waksberg"
+        ],
+        "title": "BoJack Horseman",
+        "overview": "Meet the most beloved sitcom horse of the 90s - 20 years later. BoJack Horseman was the star of the hit TV show \"Horsin' Around,\" but today he's washed up, living in Hollywood, complaining about everything, and wearing colorful sweaters.",
+        "video": "i1eJMig5Ik4",
+        "posterPath": "/pB9L0jAnEQLMKgexqCEocEW8TA.jpg",
+        "posterURLs": {
+            "92": "https://image.tmdb.org/t/p/w92/pB9L0jAnEQLMKgexqCEocEW8TA.jpg",
+            "154": "https://image.tmdb.org/t/p/w154/pB9L0jAnEQLMKgexqCEocEW8TA.jpg",
+            "185": "https://image.tmdb.org/t/p/w185/pB9L0jAnEQLMKgexqCEocEW8TA.jpg",
+            "342": "https://image.tmdb.org/t/p/w342/pB9L0jAnEQLMKgexqCEocEW8TA.jpg",
+            "500": "https://image.tmdb.org/t/p/w500/pB9L0jAnEQLMKgexqCEocEW8TA.jpg",
+            "780": "https://image.tmdb.org/t/p/w780/pB9L0jAnEQLMKgexqCEocEW8TA.jpg",
+            "original": "https://image.tmdb.org/t/p/original/pB9L0jAnEQLMKgexqCEocEW8TA.jpg"
+        },
+        "seasons": 6,
+        "episodes": 76,
+        "age": 15,
+        "status": 4,
+        "tagline": "",
+        "streamingInfo": {
+            "netflix": {
+                "ca": {
+                    "link": "https://www.netflix.com/title/70300800/",
+                    "added": 1600283847,
+                    "leaving": 0
+                }
+            }
+        },
+        "originalLanguage": "en"
+    }]
+}

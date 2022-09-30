@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const { get } = require("http");
 
-const PORT = 4000;
+const PORT = 4001;
 
 //=============================================================================
 //imports by source============================================================
@@ -16,7 +16,7 @@ const {
 
 
 const {
-  getServicesDb
+  getServicesDb, getCurrentUser, getCountries
 } = require("./nodeDataHandlers")
 
 //=============================================================================
@@ -45,13 +45,15 @@ express()
 //api stuff (all gets)=========================================================
 //get a list of services and the countries they're available in.
 .get('/servicesAPI', getServicesAPI)
-//get a show based on search params
+//get a bunch of shows based on search params
 .get('/show', getStream)
 
 
 //Db stuff=====================================================================
 //gets
 .get('/servicesDb', getServicesDb)
+.get('/currentUser/:user', getCurrentUser)
+.get('/countriesDb', getCountries)
 
 //=============================================================================
 //Boilerplate continued========================================================
