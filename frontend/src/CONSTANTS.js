@@ -1,3 +1,5 @@
+//A couple of quick hardcoded exports to allow things to render quickly because they won't change.
+
 export const COUNTRIES = [
     {country:'Argentina',code: 'ar'},
     {country:'Australia',code: 'au'},

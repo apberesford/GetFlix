@@ -5,7 +5,7 @@ const morgan = require("morgan");
 const helmet = require("helmet");
 const { get } = require("http");
 
-const PORT = 4001;
+const PORT = 4000;
 
 //=============================================================================
 //imports by source============================================================
@@ -42,6 +42,7 @@ express()
 
 //=============================================================================
 //endpoints====================================================================
+
 //api stuff (all gets)=========================================================
 //get a list of services and the countries they're available in.
 .get('/servicesAPI', getServicesAPI)

@@ -3,6 +3,10 @@ import { useAuth0 } from "@auth0/auth0-react";
 export const SiteContext = createContext(null);
 
 export const UserContext = ({children}) => {
+  //All of the context here (except error) flow out from the auth0 feature;
+  //collection is the user collection of saved shows for quick rendering. 
+  //userState saves some profile information (location, subscriptions, for
+  //better ux)
     const { user } = useAuth0()
     const [collection, setCollection] = useState([])
     const [error, setError] = useState(false)

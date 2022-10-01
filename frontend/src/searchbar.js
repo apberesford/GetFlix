@@ -3,8 +3,15 @@ import styled from "styled-components";
 import { COUNTRIES, SERVICES } from "./CONSTANTS";
 import { SiteContext } from "./context";
 
+//This is the searchbar which pings the API. It accepts mostly dropdown
+//information to reduce user error. It is less nimble than searching 
+//collection
 const SearchBar = () => {
+  //This is based on Auth0
   const { userState } = useContext(SiteContext);
+  //Failsafe to prevent repeat searches
+  const [isSearching, setIsSearching] = useState(false)
+  //This is the model params which will be passed to the API for the search.
   const [params, setParams] = useState({
     country: "",
     service: "",
@@ -14,8 +21,32 @@ const SearchBar = () => {
     output_language: "en",
     language: "en",
   });
-  console.log(params)
-  const clearChanges = (e) => {
+  //This async function confirms the shape of the data
+  const fetchShows = async (e) => {
+    if (!params.country || !params.service || !params.type || !params.keyword) return console.log("insufficient information")
+    //passes the information to the backend
+    await fetch(`/show?country=${params.country}&service=${params.service}&type=${params.type}&keyword=${params.keyword}&page=1&output_language=en&language=en`)
+    ((res) => res.json())
+    await ((data) => {
+      console.log(data)
+      //resets the searchbar
+      setParams({
+        country: "",
+        service: "",
+        type: "",
+        keyword: "",
+        page: "1",
+        output_language: "en",
+        language: "en",
+      });
+      //and will eventually pass the information to a list for rendering
+    })
+    .catch(() => {
+      console.log("error")
+    });
+  }
+  //a button to clear search params
+  const clearChanges = () => {
     setParams({
       country: "",
       service: "",
@@ -26,15 +57,19 @@ const SearchBar = () => {
       language: "en",
     });
   };
+  //This keeps the params object up to date with user inputs
   const handleChange = (e) => {
     setParams({
       ...params,
       [e.target.id]: e.target.value,
     });
   };
-  const handleSearch = (e) => {
-    if (!params.country || !params.service || !params.type || !params.keyword) console.log("insufficient information")
-  }
+  //This protects from endless rerendering
+  useEffect(async() => {
+    setIsSearching(true)
+    await fetchShows();
+    setIsSearching(false)
+  }, []);
   return (
     <>
       <Row>
@@ -44,11 +79,16 @@ const SearchBar = () => {
           value={params.keyword}
           onChange={handleChange}
           onKeyDown={(ev) => {
-            if (ev.key === "Enter") {handleSearch(params)}
+            // if (ev.key === "Enter") {onSubmit(params)}
           }}
         ></SearchBox>
-        <Button id="search" onClick={handleSearch(params)}></Button>
-        <Button id="clear" onClick={clearChanges}></Button>
+        {isSearching === true ? (<p>Searching</p>
+        ) : (
+          <>
+          <Button id="search" onClick={useEffect} style={{backgroundColor: "green"}}>S</Button>
+          <Button id="clear" onClick={clearChanges} style={{backgroundColor: "red"}}>C</Button>
+          </>
+        )}
 
       </Row>
       <Row>
@@ -59,6 +99,10 @@ const SearchBar = () => {
           </Select>
           <Select id="country" value={params.country} onChange={handleChange}>
             {COUNTRIES.map((country) => {
+              //This map is finding all the countries from the data set. The data
+              //is hardcoded and stored on the front end because the API doesn't
+              //have a way of retreiving it on load, and it isn't sensitive.
+              //The key is the standard 2 digit country code.
               return (
                 <Item key={country.code} value={country.code}>
                   {country.country}
@@ -68,6 +112,8 @@ const SearchBar = () => {
           </Select>
           <Select id="service" value={params.service} onChange={handleChange}>
             {SERVICES.filter((service) => {
+              //Services rerenders when the country changes, and filters based on 
+              //services available in the region.
               if (Object.values(service)[0].includes(params.country)) {
                 return Object.keys(service)[0];
               }
@@ -88,9 +134,20 @@ const SearchBar = () => {
   );
 };
 const Row = styled.div``;
-const SearchBox = styled.input``;
-const Button = styled.button``;
-const Select = styled.select``;
+const SearchBox = styled.input`
+  width: clamp(100px, 80%, 800px);
+  margin: .5em;
+  `;
+const Button = styled.button`
+  height: 2em;
+  width: 2em;
+  border-radius: 50%;
+  border: none;
+  margin: .5em
+  `;
+const Select = styled.select`
+  margin: 1em
+  `;
 const Item = styled.option``;
 
 export default SearchBar;
