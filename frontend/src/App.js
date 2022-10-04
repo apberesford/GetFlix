@@ -9,6 +9,10 @@ import { useAuth0 } from "@auth0/auth0-react";
 
 import SearchBar from './searchBar'
 import Header from './header'
+import EditProfile from "./editProfile";
+import MyLibrary from './MyLibrary';
+import TabBar from './tabBar'
+import Home from './home'
 
 const App = () => {
   //The app has some functionality that depends on a user being logged in, but
@@ -21,8 +25,12 @@ const App = () => {
     <Router>
         <LayoutWrapper>
           <Header />
+          <TabBar />
           <Routes>
-            <Route path="/" element={<SearchBar />} />
+            <Route path='/' element={<Home />} />
+            <Route path="/searchBar" element={<SearchBar />} />
+            <Route path='/profile/' element={<EditProfile />} />
+            <Route path='/myLibrary/' element={<MyLibrary />} />
           </Routes>
         </LayoutWrapper>
   </Router>
@@ -30,6 +38,6 @@ const App = () => {
 }
 
 
-const LayoutWrapper = styled.div`
-`;
+const LayoutWrapper = styled.div``;
+
 export default App;

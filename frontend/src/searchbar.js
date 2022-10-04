@@ -1,14 +1,17 @@
-import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { COUNTRIES, SERVICES } from "./CONSTANTS";
+import { useEffect, useState, useContext } from "react";
 import { SiteContext } from "./context";
+
+
+import Result from "./result";
 
 //This is the searchbar which pings the API. It accepts mostly dropdown
 //information to reduce user error. It is less nimble than searching 
 //collection
 const SearchBar = () => {
   //This is based on Auth0
-  const { userState } = useContext(SiteContext);
+  const { userState, searchData, setSearchData } = useContext(SiteContext);
   //Failsafe to prevent repeat searches
   const [isSearching, setIsSearching] = useState(false)
   //This is the model params which will be passed to the API for the search.
@@ -21,29 +24,19 @@ const SearchBar = () => {
     output_language: "en",
     language: "en",
   });
+  
   //This async function confirms the shape of the data
   const fetchShows = async (e) => {
-    if (!params.country || !params.service || !params.type || !params.keyword) return console.log("insufficient information")
-    //passes the information to the backend
-    await fetch(`/show?country=${params.country}&service=${params.service}&type=${params.type}&keyword=${params.keyword}&page=1&output_language=en&language=en`)
-    ((res) => res.json())
-    await ((data) => {
-      console.log(data)
-      //resets the searchbar
-      setParams({
-        country: "",
-        service: "",
-        type: "",
-        keyword: "",
-        page: "1",
-        output_language: "en",
-        language: "en",
-      });
-      //and will eventually pass the information to a list for rendering
-    })
-    .catch(() => {
-      console.log("error")
-    });
+    try {
+      //passes the information to the backend
+      const fetchResult = await fetch(`/show?country=${params.country}&service=${params.service}&type=${params.type}&keyword=${params.keyword}&page=1&output_language=en&language=en`)
+      const data = await fetchResult.json()
+      // and saves the response in state to use
+        setSearchData(data.data)
+    } catch (error) {
+      console.log(error)
+    };
+    setIsSearching(false)
   }
   //a button to clear search params
   const clearChanges = () => {
@@ -65,11 +58,15 @@ const SearchBar = () => {
     });
   };
   //This protects from endless rerendering
-  useEffect(async() => {
-    setIsSearching(true)
-    await fetchShows();
-    setIsSearching(false)
-  }, []);
+  
+  useEffect(() => {
+    if (!params.country || !params.service || !params.type || !params.keyword) {return console.log("insufficient info")}
+    if (isSearching === false) {return console.log("done")}
+    fetchShows() 
+    .then(setIsSearching(false))
+  }, [isSearching]);
+
+
   return (
     <>
       <Row>
@@ -79,13 +76,12 @@ const SearchBar = () => {
           value={params.keyword}
           onChange={handleChange}
           onKeyDown={(ev) => {
-            // if (ev.key === "Enter") {onSubmit(params)}
           }}
         ></SearchBox>
         {isSearching === true ? (<p>Searching</p>
         ) : (
           <>
-          <Button id="search" onClick={useEffect} style={{backgroundColor: "green"}}>S</Button>
+          <Button id="search" onClick={()=>setIsSearching(true)} style={{backgroundColor: "green"}}>S</Button>
           <Button id="clear" onClick={clearChanges} style={{backgroundColor: "red"}}>C</Button>
           </>
         )}
@@ -98,6 +94,7 @@ const SearchBar = () => {
             <Item key={"series"}>series</Item>
           </Select>
           <Select id="country" value={params.country} onChange={handleChange}>
+            {/* {userState.country ? <Item key={userState.country[1]} value={userState.country[1]}>{userState.country[0]}</Item> : <></>} */}
             {COUNTRIES.map((country) => {
               //This map is finding all the countries from the data set. The data
               //is hardcoded and stored on the front end because the API doesn't
@@ -111,6 +108,8 @@ const SearchBar = () => {
             })}
           </Select>
           <Select id="service" value={params.service} onChange={handleChange}>
+            {/* Set this up so that once there's a function to check multiple services in one go */}
+            {/* {userState.subscriptions ? <Item key={1} value={1}>My Subscriptions</Item> : <></>}  */}
             {SERVICES.filter((service) => {
               //Services rerenders when the country changes, and filters based on 
               //services available in the region.
@@ -128,6 +127,28 @@ const SearchBar = () => {
               );
             })}
           </Select>
+          {isSearching ? (
+            <>searching</>
+          ) : (
+          searchData.length === 0 ? (
+            <div>no data</div>
+          ) : (
+            <div>
+              some data
+            {searchData.map((result) => {
+              return (
+                <Result 
+                  key={result.imdbID}
+                  result={result}
+                  country={params.country}
+                  service={params.service}
+                  type={params.type}
+                />
+                )
+              })}
+            </div>
+          )
+          )}
         </div>
       </Row>
     </>
@@ -143,7 +164,7 @@ const Button = styled.button`
   width: 2em;
   border-radius: 50%;
   border: none;
-  margin: .5em
+  margin: .5em;
   `;
 const Select = styled.select`
   margin: 1em

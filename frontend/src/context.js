@@ -8,34 +8,15 @@ export const UserContext = ({children}) => {
   //userState saves some profile information (location, subscriptions, for
   //better ux)
     const { user } = useAuth0()
-    const [collection, setCollection] = useState([])
     const [error, setError] = useState(false)
     const [userState, setUserState] = useState(null)
-
-    useEffect(() =>{
-        if (user) {
-          
-                      fetch(`/currentUser/${user.email}`)
-                      .then(res => res.json())
-                      .then(data => {
-                          console.log(data)
-                      //   setHandleState();
-                      })
-                      .catch(() => {
-                        setError(true);
-                      })
-                    } else {
-                      setUserState(null)
-                      setCollection([])
-                    }
-                  }, [user])
-
+    const [searchData, setSearchData] = useState([])
 
 return (
     <SiteContext.Provider value={{
-        collection, setCollection,
         error, setError,
-        userState, setUserState
+        userState, setUserState,
+        searchData, setSearchData
       }}
     >
       {children}

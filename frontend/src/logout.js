@@ -4,21 +4,25 @@ import styled from "styled-components";
 
 const LogoutButton = () => {
   const { logout } = useAuth0();
+  const { user } = useAuth0();
+  let initials = ""
+  user.name ? initials = user.name.split(' ').map(word => word[0]).join('') : initials = "GF"
+  
 
   return (
-    <button onClick={() => logout({ returnTo: window.location.origin })}>
-      Log Out
-    </button>
+    <Button onClick={() => logout({ returnTo: window.location.origin })}>
+      {initials}
+    </Button>
   );
 };
 
 const Button = styled.button`
-    height: 2em;
-    width: 2em;
+    height: 2.5em;
+    width: 2.5em;
     border-radius: 50%;
     border: none;
-    background-color: "black";
-    color: "white"
+    background-color: black;
+    color: white
 `;
 
 export default LogoutButton;

@@ -33,7 +33,7 @@ const getServicesAPI = async (req, res) => {
 
 //get stream, this should try to find a show from the api server
 const getStream = async (req,res) => {
-    console.log(req.query)
+    // console.log(req.query)
     try {
     const apiOptions = {
         url: 'https://streaming-availability.p.rapidapi.com/search/basic',
@@ -45,8 +45,9 @@ const getStream = async (req,res) => {
       };
       
       const response = await axios.request(apiOptions)
+      console.log(response)
           console.log(response.data);
-          response ? res.status(200).json({status: 200, message: "shows found", data: response.data})
+          response ? res.status(200).json({status: 200, message: "shows found", data: response.data.results})
           : res.status(404).json({status: 404, message: "nothing found"})
     } catch(error) {
         return console.log(error)
