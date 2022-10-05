@@ -8,16 +8,18 @@ import { SiteContext } from "./context";
 //country and list of services they use to speed up searches.
 const EditProfile = () => {
   const {userState, setUserState, error, setError} = useContext(SiteContext)
-  const [profileParams, setProfileParams] = useState({country: userState.country, countryCode: userState.countryCode, subscriptions: userState.subscriptions})
+  const [profileParams, setProfileParams] = useState({_id: userState._id, country: userState.country, countryCode: userState.countryCode, subscriptions: userState.subscriptions})
   const [newArray, setNewArray] = useState([])
   const [click, setClick] = useState(false)
   const [cancel, setCancel] = useState(false)
-  console.log(profileParams)
   //handles the change of country in the dropdown window, so the user can set a country.
   const handleChangeList = (e) => {
+
     setProfileParams({
       ...profileParams,
-      [e.target.id]: e.target.value,
+      ["country"]: e.target[e.target.selectedIndex].innerText,
+      ["countryCode"]: e.target.value,
+      ["subscriptions"]: userState.subscriptions
     });
   }
   //handles the checkboxes of available services, so the user can set their services.
@@ -41,7 +43,12 @@ const EditProfile = () => {
   }, [newArray]);
   useEffect(() => {
     if (click === false) {return console.log("done")}
-    console.log("click")
+    fetch('/updateUser', {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(profileParams)
+    })
+    .then((res) => res.json())
     setClick(false)
   }, [click])
   useEffect(() => {
@@ -50,11 +57,12 @@ const EditProfile = () => {
     setCancel(false)
   }, [cancel])
     return (
-      !userState.country ? (<>Please Log in</>) : ( 
         <>
         <p>Select a country</p>
-        <Select id="country" value={profileParams.country ? profileParams.country : ""} onChange={handleChangeList}>
-          <Item>SELECT A COUNTRY</Item>
+        <Select id="country" 
+        value={profileParams.countryCode ? profileParams.countryCode : ""} 
+        key={profileParams.countryCode ? profileParams.countryCode : ""} onChange={handleChangeList}>
+          <Item value={""} disabled>SELECT A COUNTRY</Item>
           {/* Adds the country code which already exists for the user, if one does at the top of the list */}
           {userState.country ? (<Item key={userState.countryCode} value={userState.countryCode}>{userState.country}</Item>
         ) : (<></>)}
@@ -74,7 +82,7 @@ const EditProfile = () => {
             {SERVICES.filter((service) => {
               //Services rerenders when the country changes, and filters based on 
               //services available in the region.
-              if (Object.values(service)[0].includes(profileParams.country)) {
+              if (Object.values(service)[0].includes(profileParams.countryCode)) {
                 return Object.keys(service)[0];
               }
             }).map((e) => {
@@ -93,7 +101,6 @@ const EditProfile = () => {
           <Button id="clear" onClick={()=>{setCancel(true)}} style={{backgroundColor: "red"}}>Cancel Changes</Button>
         </>
       )
-    )
   }
   
 const Select = styled.select`

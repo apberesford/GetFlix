@@ -11,19 +11,9 @@ import Result from "./result";
 //collection
 const SearchBar = () => {
   //This is based on Auth0
-  const { userState, searchData, setSearchData } = useContext(SiteContext);
+  const { userState, searchData, setSearchData, params, setParams } = useContext(SiteContext);
   //Failsafe to prevent repeat searches
   const [isSearching, setIsSearching] = useState(false)
-  //This is the model params which will be passed to the API for the search.
-  const [params, setParams] = useState({
-    country: "",
-    service: "",
-    type: "",
-    keyword: "",
-    page: "1",
-    output_language: "en",
-    language: "en",
-  });
   //This async function confirms the shape of the data
   const fetchShows = async (e) => {
     try {
@@ -56,7 +46,6 @@ const SearchBar = () => {
       [e.target.id]: e.target.value,
     });
   };
-  //This protects from endless rerendering
   
   useEffect(() => {
     if (!params.country || !params.service || !params.type || !params.keyword) {return console.log("insufficient info")}
@@ -93,7 +82,6 @@ const SearchBar = () => {
           </Select>
           <Select id="country" value={!params.country ? (""):(params.country )} onChange={handleChange}>
             {!userState.country ? (<></>) : (<Item key={userState.countryCode}>{userState.country}</Item>)}
-            {/* {userState.country ? <Item key={userState.countryCode} value={userState.country}>{userState.country}</Item> : <></>} */}
             {COUNTRIES.map((country) => {
               //This map is finding all the countries from the data set. The data
               //is hardcoded and stored on the front end because the API doesn't

@@ -11,7 +11,7 @@ const PORT = 4000;
 //imports by source============================================================
 
 const {
-  getServicesAPI, getStream,
+  getServicesAPI, getStream, getOne
 } = require("./apiHandlers")
 
 
@@ -48,8 +48,10 @@ express()
 .get('/servicesAPI', getServicesAPI)
 //get a bunch of shows based on search params
 .get('/show', getStream)
-//get a particular show based on unique imdb code
 //get a bunch of shows from multiple services, based on promise All
+//TODO!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//get a particular show based on unique imdb code
+.get('/details/:countryCode/:type/:tmdbID', getOne)
 
 
 //Db stuff=====================================================================

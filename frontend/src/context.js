@@ -11,12 +11,23 @@ export const UserContext = ({children}) => {
     const [error, setError] = useState(false)
     const [userState, setUserState] = useState(null)
     const [searchData, setSearchData] = useState([])
+      //This is the model params which will be passed to the API for the search.
+    const [params, setParams] = useState({
+      country: "",
+      service: "",
+      type: "",
+      keyword: "",
+      page: "1",
+      output_language: "en",
+      language: "en",
+    });
 
 return (
     <SiteContext.Provider value={{
         error, setError,
         userState, setUserState,
-        searchData, setSearchData
+        searchData, setSearchData,
+        params, setParams
       }}
     >
       {children}
