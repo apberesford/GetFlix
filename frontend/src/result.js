@@ -6,7 +6,6 @@ import SearchBar from "./searchBar.js";
 
 
 const Result = ({result, resultId, country, service, type}) => {
-    console.log(result.streamingInfo[service][country].link)
     return (
         <Wrapper>
             <Poster src={result.posterURLs.original} alt={`release poster for ${result.title}`}/>

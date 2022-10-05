@@ -24,7 +24,6 @@ const SearchBar = () => {
     output_language: "en",
     language: "en",
   });
-  
   //This async function confirms the shape of the data
   const fetchShows = async (e) => {
     try {
@@ -65,8 +64,6 @@ const SearchBar = () => {
     fetchShows() 
     .then(setIsSearching(false))
   }, [isSearching]);
-
-
   return (
     <>
       <Row>
@@ -90,11 +87,13 @@ const SearchBar = () => {
       <Row>
         <div>
           <Select id="type" value={params.type} onChange={handleChange}>
+            <Item> SELECT</Item>
             <Item key={"movie"}>movie</Item>
             <Item key={"series"}>series</Item>
           </Select>
-          <Select id="country" value={params.country} onChange={handleChange}>
-            {/* {userState.country ? <Item key={userState.country[1]} value={userState.country[1]}>{userState.country[0]}</Item> : <></>} */}
+          <Select id="country" value={!params.country ? (""):(params.country )} onChange={handleChange}>
+            {!userState.country ? (<></>) : (<Item key={userState.countryCode}>{userState.country}</Item>)}
+            {/* {userState.country ? <Item key={userState.countryCode} value={userState.country}>{userState.country}</Item> : <></>} */}
             {COUNTRIES.map((country) => {
               //This map is finding all the countries from the data set. The data
               //is hardcoded and stored on the front end because the API doesn't

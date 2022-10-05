@@ -1,13 +1,16 @@
 import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import styled from "styled-components";
+import { useContext } from "react";
+import { SiteContext } from "./context";
 
 const LogoutButton = () => {
+  const {setUserState} = useContext(SiteContext)
   const { logout } = useAuth0();
   const { user } = useAuth0();
   let initials = ""
   user.name ? initials = user.name.split(' ').map(word => word[0]).join('') : initials = "GF"
-  
+  // setUserState(null)
 
   return (
     <Button onClick={() => logout({ returnTo: window.location.origin })}>

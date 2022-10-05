@@ -7,11 +7,12 @@ import { SiteContext } from "./context";
 //a pretty barebones edit profile page. This allows the user to "preset" a 
 //country and list of services they use to speed up searches.
 const EditProfile = () => {
-  const {userState, setUserState} = useContext(SiteContext)
-  const [profileParams, setProfileParams] = useState({country: "", subscriptions: []})
+  const {userState, setUserState, error, setError} = useContext(SiteContext)
+  const [profileParams, setProfileParams] = useState({country: userState.country, countryCode: userState.countryCode, subscriptions: userState.subscriptions})
   const [newArray, setNewArray] = useState([])
-  // const [click, setClick] = useState(false)
-  console.log(userState)
+  const [click, setClick] = useState(false)
+  const [cancel, setCancel] = useState(false)
+  console.log(profileParams)
   //handles the change of country in the dropdown window, so the user can set a country.
   const handleChangeList = (e) => {
     setProfileParams({
@@ -33,21 +34,30 @@ const EditProfile = () => {
   //this use effect watches when boxes are unchecked, to set the 
   //profileParams.subscriptions without stale setting interfering 
   useEffect(() => {
+    setProfileParams(userState)
+  }, [])
+  useEffect(() => {
     setProfileParams({...profileParams, ["subscriptions"]: newArray})
   }, [newArray]);
-  // useEffect(() => {
-  //   if (click === false) {return console.log("done")}
-  //   console.log("click")
-  //   setClick(false)
-  // }, [click])
+  useEffect(() => {
+    if (click === false) {return console.log("done")}
+    console.log("click")
+    setClick(false)
+  }, [click])
+  useEffect(() => {
+    if (cancel === false) {return console.log("done")}
+    setProfileParams({country: userState.country, countryCode: userState.countryCode, subscriptions: userState.subscriptions})
+    setCancel(false)
+  }, [cancel])
     return (
+      !userState.country ? (<>Please Log in</>) : ( 
         <>
         <p>Select a country</p>
-        {console.log(profileParams.country)}
-        <Select id="country" value={profileParams.country[1]} onChange={handleChangeList}>
-        {/* {userState.country ? (<Item key={userState.country[1]} value={userState.country[1]}>{userState.country[0].toUpperCase}</Item>
-        ) : (<Item>Select</Item>)} */}
-            {/* Add the country code which already exists for the user, if one does */}
+        <Select id="country" value={profileParams.country ? profileParams.country : ""} onChange={handleChangeList}>
+          <Item>SELECT A COUNTRY</Item>
+          {/* Adds the country code which already exists for the user, if one does at the top of the list */}
+          {userState.country ? (<Item key={userState.countryCode} value={userState.countryCode}>{userState.country}</Item>
+        ) : (<></>)}
             {COUNTRIES.map((country) => {
                 //This map is finding all the countries from the data set. The data
                 //is hardcoded and stored on the front end because the API doesn't
@@ -68,17 +78,21 @@ const EditProfile = () => {
                 return Object.keys(service)[0];
               }
             }).map((e) => {
+              //You want unique keys? Here.
               const unique = Object.keys(e).toString() 
+              const checked = profileParams.subscriptions.find(e => e === unique)
               return ( 
                 <span key={unique} >
-                <Check id={unique} type={"checkbox"} label={profileParams.subscriptions} onChange={handleChangeCheck}/>
+                <Check id={unique} type={"checkbox"} label={profileParams.subscriptions} checked={checked ? 'checked' : ""}onChange={handleChangeCheck}/>
                 <Label> {unique} </Label>
                 </span>
               );
             })}
           </div>
-          {/* <Button id="save" onClick={setClick(true)} style={{backgroundColor: "green"}}>S</Button> */}
+          <Button id="save" onClick={()=>{setClick(true)}} style={{backgroundColor: "green"}}>Save Changes</Button>
+          <Button id="clear" onClick={()=>{setCancel(true)}} style={{backgroundColor: "red"}}>Cancel Changes</Button>
         </>
+      )
     )
   }
   

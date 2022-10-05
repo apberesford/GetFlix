@@ -10,10 +10,11 @@ import EditProfile from './editProfile'
 import { SiteContext } from "./context";
 
 const Header = () => {
-    //pretty self explanatory. The profile page allows the user to change user
-    //object for things which are not hardcoded at creation.
-    const { user } = useAuth0()
-    const { userState, setUserState, error, setError, setCollection } = useContext(SiteContext);
+  //pretty self explanatory. The profile page allows the user to change user
+  //object for things which are not hardcoded at creation.
+  const { user } = useAuth0()
+  const { userState, setUserState, error, setError, setCollection } = useContext(SiteContext);
+
     //I dont love this if, but it crashes if I don't use it... It also seems to mean that it never updates?
     useEffect(() =>{
         if (user) {

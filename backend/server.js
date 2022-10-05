@@ -16,7 +16,7 @@ const {
 
 
 const {
-  getServicesDb, getCurrentUser, getCountries
+  getServicesDb, getCurrentUser, getCountries, updateUser, updateList, updateTags
 } = require("./nodeDataHandlers")
 
 //=============================================================================
@@ -48,13 +48,21 @@ express()
 .get('/servicesAPI', getServicesAPI)
 //get a bunch of shows based on search params
 .get('/show', getStream)
+//get a particular show based on unique imdb code
+//get a bunch of shows from multiple services, based on promise All
 
 
 //Db stuff=====================================================================
 //gets
+//service/country stuff. Mostly unused in this build, but necessary for live.
 .get('/servicesDb', getServicesDb)
-.get('/currentUser/:user', getCurrentUser)
 .get('/countriesDb', getCountries)
+//user stuff
+.get('/currentUser/:user', getCurrentUser)
+.patch('/updateUser', updateUser)
+//show stuff
+.patch('/updateList', updateList)
+.patch('/updateTags', updateTags)
 
 //=============================================================================
 //Boilerplate continued========================================================
