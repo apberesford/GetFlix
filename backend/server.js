@@ -16,7 +16,8 @@ const {
 
 
 const {
-  getServicesDb, getCurrentUser, getCountries, updateUser, updateList, updateTags
+  getServicesDb, getCurrentUser, getCountries, updateUser, updateList, updateTags,
+  isWatched
 } = require("./nodeDataHandlers")
 
 //=============================================================================
@@ -65,6 +66,7 @@ express()
 //show stuff
 .patch('/updateList', updateList)
 .patch('/updateTags', updateTags)
+.patch('/isWatched', isWatched)
 
 //=============================================================================
 //Boilerplate continued========================================================

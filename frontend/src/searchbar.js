@@ -27,6 +27,21 @@ const SearchBar = () => {
     };
     setIsSearching(false)
   }
+  //this function is called if the services are an array (i.e. several services 
+  //are being searched at once). It promises all the returns since I didn't want 
+  //to pay for the premium API, and this is an acceptable workaround at small scale
+  // const fetchManyShows = async (e) => {
+  //   try {
+  //     //passes the information to the backend
+  //     const fetchResult = await fetch(`/show?country=${params.country}&service=${params.service}&type=${params.type}&keyword=${params.keyword}&page=1&output_language=en&language=en`)
+  //     const data = await fetchResult.json()
+  //     // and saves the response in state to use
+  //       setSearchData(data.data)
+  //   } catch (error) {
+  //     console.log(error)
+  //   };
+  //   setIsSearching(false)
+  // } 
   //a button to clear search params
   const clearChanges = () => {
     setParams({
@@ -46,12 +61,27 @@ const SearchBar = () => {
       [e.target.id]: e.target.value,
     });
   };
-  
+  useEffect(() =>{
+    setParams({
+      country: (userState?.countryCode ? userState.countryCode : ""),
+      service: (userState?.subscriptions ? userState.subscriptions : ""),
+      type: "",
+      keyword: "",
+      page: "1",
+      output_language: "en",
+      language: "en",
+    });
+  }, [])
   useEffect(() => {
     if (!params.country || !params.service || !params.type || !params.keyword) {return console.log("insufficient info")}
-    if (isSearching === false) {return console.log("done")}
-    fetchShows() 
-    .then(setIsSearching(false))
+    if (isSearching === false) {return undefined}
+    if (typeof params.service === "string") {
+      fetchShows()
+      .then(setIsSearching(false))
+    }
+    // else {fetchManyShows()
+    //   .then(setIsSearching(false))
+    // }
   }, [isSearching]);
   return (
     <>
@@ -61,8 +91,6 @@ const SearchBar = () => {
           type="text"
           value={params.keyword}
           onChange={handleChange}
-          onKeyDown={(ev) => {
-          }}
         ></SearchBox>
         {isSearching === true ? (<p>Searching</p>
         ) : (
@@ -81,7 +109,8 @@ const SearchBar = () => {
             <Item key={"series"}>series</Item>
           </Select>
           <Select id="country" value={!params.country ? (""):(params.country )} onChange={handleChange}>
-            {!userState.country ? (<></>) : (<Item key={userState.countryCode}>{userState.country}</Item>)}
+            {userState?.country ? <Item key="myCountry" value={userState.countryCode}>{userState.country}</Item> : <Item value="">Select a country</Item>} 
+            {/* {!userState.country ? (<></>) : (<Item key={userState.countryCode}>{userState.country}</Item>)} */}
             {COUNTRIES.map((country) => {
               //This map is finding all the countries from the data set. The data
               //is hardcoded and stored on the front end because the API doesn't
@@ -95,6 +124,7 @@ const SearchBar = () => {
             })}
           </Select>
           <Select id="service" value={params.service} onChange={handleChange}>
+            {userState?.subscriptions ? <Item key="mySubs" value={userState.subscriptions}>My Services</Item> : <Item value="">Select a service</Item>}
             {/* Set this up so that once there's a function to check multiple services in one go */}
             {/* {userState.subscriptions ? <Item key={1} value={1}>My Subscriptions</Item> : <></>}  */}
             {SERVICES.filter((service) => {

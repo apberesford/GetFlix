@@ -69,8 +69,12 @@ const getCurrentUser = async (req,res) => {
         await client.connect();
         const db = client.db("GetFlix")
         let result = await db.collection("users").findOne({_id: req.params.user})
-        result ? res.status(200).json({status: 200, message: "user logged in", data: result})
-        : res.status(404).json({status: 404, message: "nothing found"})
+        console.log(result)
+        if (!result) {const newUser = {_id: req.params.user, country: "", countryCode: "", subscriptions: [], shows: []}
+            await db.collection("users").insertOne(newUser)
+                res.status(200).json({status: 200, message: "new user created", data: newUser})}
+        
+        else {res.status(200).json({status: 200, message: "user logged in", data: result})}
     } catch (error) {
         res.status(500).json({status: 500, data: error})
     } finally {
@@ -116,7 +120,7 @@ const updateList = async (req,res) => {
         else { 
             const show = await db.collection("users").findOne({_id: req.body._id, shows: {$elemMatch: {imdbID: req.body.item.imdbID}}})
             if (!show) {
-                await db.collection("users").updateOne({_id: req.body._id}, {$push: {shows: req.body.item}}, {upsert: true})
+                await db.collection("users").updateOne({_id: req.body._id}, {$push: {shows: {...req.body.item, isWatched: true}}}, {upsert: true})
                 await res.status(200).json({status: 200, message: "show added!"})
             }
             else {
@@ -131,11 +135,39 @@ const updateList = async (req,res) => {
     }
 
 }
+//adds the boolean "read" to shows to indicate the user has watched them.   
+const isWatched = async (req,res) => {
+    const client = new MongoClient(MONGO_URI, options)
+    if (!req.body._id || !req.body.imdbID) {return res.status(400).json({status: 400, message: "not enough data", data: req.body})}
+    try {
+        await client.connect();
+        const db = client.db("GetFlix")
+        const user = await db.collection("users").findOne({_id: req.body._id})
+        if (!user) {res.status(404).json({ status: 404, data: "no user found" })}  
+        else { 
+            const show = await db.collection("users").findOne({_id: req.body._id, shows: {$elemMatch: {imdbID: req.body.imdbID}}})
+            if (!show) {res.status(404).json({ status: 404, data: "no show found" })} 
+            else {
+                if (show.shows[0].isWatched === true) {
+                    await db.collection("users").updateOne({_id: req.body._id, shows: {$elemMatch: {imdbID: req.body.imdbID}}}, {$set: {"shows.$.isWatched": false}})
+                     res.status(200).json({status: 200, message: "status updated!"})
+                } else {       
+                    const pushresult = await db.collection("users").updateOne({_id: req.body._id, shows: {$elemMatch: {imdbID: req.body.imdbID}}}, {$set: {"shows.$.isWatched": true}}, {$upsert: true})
+                     res.status(200).json({status: 200, message: "status updated!"})
+                    }
+                }
+        } 
+    } catch (error) {
+        res.status(500).json({status: 500, data: error})
+    } finally {
+        client.close();
+    }
+}
 //updates an array being added to each show object "tags" which allows the user 
 //to group, filter, and find shows based on the tags
 const updateTags = async (req, res) => {
     const client = new MongoClient(MONGO_URI, options)
-    if (!req.body._id || !req.body.imdbID || !req.body.tag) {return res.status(400).json({status: 400, message: "not enough data", data: req.body})}
+    if (!req.body._id || !req.body.imdbID || !req.body.tags) {return res.status(400).json({status: 400, message: "not enough data", data: req.body})}
     try {
         await client.connect();
         const db = client.db("GetFlix")
@@ -145,8 +177,7 @@ const updateTags = async (req, res) => {
             const show = await db.collection("users").findOne({_id: req.body._id, shows: {$elemMatch: {imdbID: req.body.imdbID}}})
             if (!show) {res.status(404).json({ status: 404, data: "no show found" })} 
             else {
-                //not sure what the problem with 149 is, but it breaks here...
-                    await db.collection("users").updateOne({_id: req.body._id, shows: {$elemMatch: {imdbID: req.body.item.imdbID}}}, {$set: {tags: req.body.tag}}, {upsert: true})
+                    await db.collection("users").updateOne({_id: req.body._id, shows: {$elemMatch: {imdbID: req.body.imdbID}}}, {$set: {"shows.$.tags": req.body.tags}}, {upsert: true})
                     await res.status(200).json({status: 200, message: "tags updated!"})
                 }
         }
@@ -161,5 +192,5 @@ const updateTags = async (req, res) => {
 //exports======================================================================
 
 module.exports = {
-    getServicesDb, getCurrentUser, getCountries, updateUser, updateList, updateTags
+    getServicesDb, getCurrentUser, getCountries, updateUser, updateList, updateTags, isWatched
 }

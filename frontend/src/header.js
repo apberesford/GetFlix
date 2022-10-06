@@ -23,7 +23,6 @@ const Header = () => {
                       .then(res => res.json())
                       .then(data => {
                             setUserState(data.data)
-                            setParams(userState)
                       })
                       .catch(() => {
                         setError(true);

@@ -10,7 +10,6 @@ const LogoutButton = () => {
   const { user } = useAuth0();
   let initials = ""
   user.name ? initials = user.name.split(' ').map(word => word[0]).join('') : initials = "GF"
-  // setUserState(null)
 
   return (
     <Button onClick={() => logout({ returnTo: window.location.origin })}>

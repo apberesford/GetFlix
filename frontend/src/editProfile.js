@@ -7,12 +7,13 @@ import { SiteContext } from "./context";
 //a pretty barebones edit profile page. This allows the user to "preset" a 
 //country and list of services they use to speed up searches.
 const EditProfile = () => {
-  const {userState, setUserState, error, setError} = useContext(SiteContext)
+  const {userState, error, setError} = useContext(SiteContext)
   const [profileParams, setProfileParams] = useState({_id: userState._id, country: userState.country, countryCode: userState.countryCode, subscriptions: userState.subscriptions})
   const [newArray, setNewArray] = useState([])
   const [click, setClick] = useState(false)
   const [cancel, setCancel] = useState(false)
   //handles the change of country in the dropdown window, so the user can set a country.
+  console.log(userState)
   const handleChangeList = (e) => {
 
     setProfileParams({
@@ -24,12 +25,13 @@ const EditProfile = () => {
   }
   //handles the checkboxes of available services, so the user can set their services.
   const handleChangeCheck = (e) => {
-    if (profileParams.subscriptions.includes(e.target.id)) {
+    if (profileParams?.subscriptions && profileParams.subscriptions.includes(e.target.id)) {
       setNewArray(profileParams.subscriptions.filter((i) => i != e.target.id))
     } else {
+      const newArray =  profileParams.subscriptions.push(e.target.id)
       setProfileParams({
         ...profileParams,
-        [e.target.label]: [profileParams.subscriptions.push(e.target.id)]
+        [e.target.label]: newArray
       });
     }
   }
@@ -42,6 +44,7 @@ const EditProfile = () => {
     setProfileParams({...profileParams, ["subscriptions"]: newArray})
   }, [newArray]);
   useEffect(() => {
+    console.log(profileParams)
     if (click === false) {return console.log("done")}
     fetch('/updateUser', {
       method: "PATCH",
@@ -88,7 +91,8 @@ const EditProfile = () => {
             }).map((e) => {
               //You want unique keys? Here.
               const unique = Object.keys(e).toString() 
-              const checked = profileParams.subscriptions.find(e => e === unique)
+              let checked = false
+              if (profileParams?.subscriptions) {checked = profileParams.subscriptions.find(e => e === unique)}
               return ( 
                 <span key={unique} >
                 <Check id={unique} type={"checkbox"} label={profileParams.subscriptions} checked={checked ? 'checked' : ""}onChange={handleChangeCheck}/>
