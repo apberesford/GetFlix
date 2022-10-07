@@ -120,7 +120,7 @@ const updateList = async (req,res) => {
         else { 
             const show = await db.collection("users").findOne({_id: req.body._id, shows: {$elemMatch: {imdbID: req.body.item.imdbID}}})
             if (!show) {
-                await db.collection("users").updateOne({_id: req.body._id}, {$push: {shows: {...req.body.item, isWatched: true}}}, {upsert: true})
+                await db.collection("users").updateOne({_id: req.body._id}, {$push: {shows: {...req.body.item, isWatched: true, tags: []}}}, {upsert: true})
                 await res.status(200).json({status: 200, message: "show added!"})
             }
             else {

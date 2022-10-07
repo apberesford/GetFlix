@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-
+//this is currently not linked to anything!
 
 const Action = ({ color, size, children, onClick }) => {
   const [isHovered, setISHovered] = useState(false);

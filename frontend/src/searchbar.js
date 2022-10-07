@@ -18,7 +18,7 @@ const SearchBar = () => {
   const fetchShows = async (e) => {
     try {
       //passes the information to the backend
-      const fetchResult = await fetch(`/show?country=${params.country}&service=${params.service}&type=${params.type}&keyword=${params.keyword}&page=1&output_language=en&language=en`)
+      const fetchResult = await fetch(`/show?country=${params.country}&service=${params.service}&type=${params.type}&keyword=${params.keyword}&page=2&output_language=en&language=en`)
       const data = await fetchResult.json()
       // and saves the response in state to use
         setSearchData(data.data)
