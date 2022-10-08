@@ -2,6 +2,7 @@ import { SiteContext } from "./context";
 import { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import ActionBar from "./actionbar";
+import DetailBar from "./detailBar";
 
 
 
@@ -41,9 +42,9 @@ const Details = ({service, country}) => {
         ) : (
             <Wrapper>
                 <Poster src={displayedItem.posterURLs.original} alt={`poster for ${displayedItem.title}`}/>
-                <LittleLink onClick={(ev) => {ev.preventDefault(); window.open(displayedItem.streamingInfo[service][country].link)}}>link</LittleLink>
+                <LittleLink onClick={(ev) => {ev.preventDefault(); window.open(displayedItem.streamingInfo[service][country].link)}}>{service}</LittleLink>
                 <>A show! Here's some more information {displayedItem.tmdbID}</>        
-                {!userState._id ? <></> : <ActionBar />}
+                {!userState._id ? <></> : <><ActionBar result={displayedItem}/><DetailBar result={displayedItem}/></>}
             </Wrapper>
         )
     )

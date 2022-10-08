@@ -19,12 +19,13 @@ const LogoutButton = () => {
 };
 
 const Button = styled.button`
-    height: 2.5em;
-    width: 2.5em;
+    height: 3.5em;
+    width: 3.5em;
     border-radius: 50%;
     border: none;
-    background-color: black;
-    color: white
+    background-color: #232323;
+    color: whitesmoke;
+    font-size: 1.2em;
 `;
 
 export default LogoutButton;

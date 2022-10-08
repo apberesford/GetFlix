@@ -1,23 +1,47 @@
-import React from "react";
+import { useAuth0 } from "@auth0/auth0-react";
+import React, { useEffect, useState, useContext }  from "react";
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
+import { SiteContext } from "./context";
 
-const Login = () => {  
+const Home = () => {  
+  const { userState, searchData, setUserState, setError } = useContext(SiteContext);
+  const { user } = useAuth0()
+  useEffect(() =>{
+    if (user) {
+                  fetch(`/currentUser/${user.email}`)
+                  .then(res => res.json())
+                  .then(data => {
+                        setUserState(data.data)
+                  })
+                  .catch(() => {
+                    setError(true);
+                    setUserState({})
+                  })
+                }
+              }, [user])
     return (
-      <>
+      <Wrapper>
         <Linky to={`/searchBar`}>If you're in a rush, click here. Get searching.</Linky>
-        <div>Welcome to GetFlix, the app for geriatric millenials who thought cordcutting would make it easier to find streaming video online.</div>
-        <div>Log in to save shows you're interested in, mark them as watched, and add tags to your shows so you can group them and make them easier to find.</div>
-        <div>Your profile page gives you the option to set what country you're looking in, and what services you own, if you aren't sure what you're looking for.</div>
-      </>
+        <Block>Welcome to GetFlix, the app for geriatric millenials who thought cordcutting would make your life easier. Find streaming video online.</Block>
+        <Block>Log in below to save shows you're interested in, mark them as watched, and add tags to your shows so you can group them and make them easier to find.</Block>
+        <Block>Your profile page gives you the option to set what country you're looking in, and what services you own, if you aren't sure what you're looking for.</Block>
+      </Wrapper>
     )
 };
 
-
+const Wrapper = styled.div`
+	display: flex;
+	flex-direction: column;
+  text-align: center;
+`;
 const Linky = styled(NavLink)`
   text-decoration: none;
-  color: black;
+  color: gray;
   padding: 1em;
   &.active {color: red;}
 `;
-export default Login;
+const Block = styled.div`
+padding: 1em;
+`;
+export default Home;

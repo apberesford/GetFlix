@@ -7,6 +7,7 @@ import {
 import styled from "styled-components";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useState, useContext } from "react";
+import GlobalStyle from './globalStyles';
 
 import { SiteContext } from "./context";
 import SearchBar from './searchBar'
@@ -29,6 +30,7 @@ const App = () => {
   return (
     <Router>
         <LayoutWrapper>
+          <GlobalStyle />
           <Header />
           <TabBar />
           <Routes>

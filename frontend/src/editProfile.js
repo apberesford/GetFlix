@@ -63,12 +63,12 @@ const EditProfile = () => {
         <>
         <p>Select a country</p>
         <Select id="country" 
-        value={profileParams.countryCode ? profileParams.countryCode : ""} 
-        key={profileParams.countryCode ? profileParams.countryCode : ""} onChange={handleChangeList}>
+        value={""} 
+        key={""} onChange={handleChangeList}>
           <Item value={""} disabled>SELECT A COUNTRY</Item>
           {/* Adds the country code which already exists for the user, if one does at the top of the list */}
-          {userState.country ? (<Item key={userState.countryCode} value={userState.countryCode}>{userState.country}</Item>
-        ) : (<></>)}
+          {/* {userState.country ? (<Item key={userState.countryCode} value={userState.countryCode}>{userState.country}</Item> */}
+        {/* ) : (<></>)} */}
             {COUNTRIES.map((country) => {
                 //This map is finding all the countries from the data set. The data
                 //is hardcoded and stored on the front end because the API doesn't
@@ -81,6 +81,8 @@ const EditProfile = () => {
                 );
             })}
         </Select>
+          <Button id="save" onClick={()=>{setClick(true)}} style={{backgroundColor: "green"}}>Save Changes</Button>
+          <Button id="clear" onClick={()=>{setCancel(true)}} style={{backgroundColor: "red"}}>Cancel Changes</Button>
         <div>
             {SERVICES.filter((service) => {
               //Services rerenders when the country changes, and filters based on 
@@ -101,8 +103,6 @@ const EditProfile = () => {
               );
             })}
           </div>
-          <Button id="save" onClick={()=>{setClick(true)}} style={{backgroundColor: "green"}}>Save Changes</Button>
-          <Button id="clear" onClick={()=>{setCancel(true)}} style={{backgroundColor: "red"}}>Cancel Changes</Button>
         </>
       )
   }
@@ -112,7 +112,9 @@ const Select = styled.select`
   `;
 const Item = styled.option``;
 const Label = styled.span``;
-const Check = styled.input``;
+const Check = styled.input`
+  margin: 1em;
+  `;
 const Button = styled.button`
   height: 2em;
   width: 2em;
@@ -124,4 +126,3 @@ const Button = styled.button`
 
 
 export default EditProfile
-  /* {checked={userState.subscriptions.includes(Object.keys(e).toString()) ? 'checked' : ''}} */

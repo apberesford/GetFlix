@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { UNSAFE_DataRouterStateContext } from "react-router-dom";
 import styled from "styled-components";
 import { COUNTRIES, SERVICES } from "./CONSTANTS";
@@ -12,6 +12,7 @@ import { SiteContext } from "./context";
 const MyLibrary = () => {
   const { userState } = useContext(SiteContext)
   const [filterParams, setFilterParams] = useState("")
+  console.log(userState)
 const handleChange = (e) => {
   setFilterParams(e.target.value)
   
@@ -19,8 +20,10 @@ const handleChange = (e) => {
 const clearChanges = () => {
   setFilterParams("")
 }
+// check for matches in the strings of both title and tags. Filter to remove 
+//duplicates, and render
 const titleSuggestions = userState.shows.filter(o => o.title.toLowerCase().includes(filterParams.toLowerCase()))
-const tagSuggestions = userState.shows.filter(o => o.tags.find(element => element.includes(filterParams.toLowerCase()))) 
+const tagSuggestions = userState.shows.filter(o => o.tags.toLowerCase().includes(filterParams.toLowerCase())) 
 const allSuggestions = titleSuggestions.concat(tagSuggestions)
 const uniqueSuggestions = []
 for(let i of allSuggestions) {
@@ -35,14 +38,14 @@ return (
             <Button id="clear" onClick={clearChanges} style={{backgroundColor: "red"}}>C</Button>
         </Row>
         <Row>
-        {/* userState.shows.filter(o => o.name === filterParams || o => o.tags */}
         {uniqueSuggestions.map((result) => {
               return (
                 <Result 
                   key={result.imdbID}
                   result={result}
+                  service={result.service}
                   country={userState.country}
-                  service={userState.service}
+                  countryCode={userState.countryCode}
                 />
                 )
               })}
@@ -51,7 +54,8 @@ return (
 )
 }
 
-const Row = styled.div``;
+const Row = styled.div`
+  margin: 1em`;
 const Button = styled.button`
   height: 2em;
   width: 2em;

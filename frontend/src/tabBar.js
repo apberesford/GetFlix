@@ -13,21 +13,32 @@ const TabBar = () => {
     const { userState } = useContext(SiteContext);
     return (
             user ?  
-        <div>
+        <Wrapper>
             <Linky to={`/searchBar`}>Search for new streamers</Linky>
             <Linky to={'/myLibrary'}>My streamers</Linky> 
-        </div>
+        </Wrapper>
             :
-        <div>
-            {/* <Linky to={`/`}>Search for new shows</Linky> */}
-        </div>
+        <>
+            {/* <Linky to={`/searchBar`}>Search for new shows</Linky> */}
+        </>
     )
 }
-
+const Wrapper = styled.div`
+	display: flex;
+`;
 const Linky = styled(NavLink)`
-  text-decoration: none;
-  color: black;
-  padding: 1em;
-  &.active {color: red;}`;
+    /* margin: 1em; */
+    background-color: #232323;
+    width: 50vw;
+    text-decoration: none;
+    color: gray;
+    padding: 1em;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+  &.active {color: whitesmoke; 
+        background: #36393E; 
+        /* border-radius: 50%; */
+    };
+  `;
 
 export default TabBar;

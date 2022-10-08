@@ -2,9 +2,10 @@
 //Boilerplate up top===========================================================
 
 const e = require("express");
-const {MongoClient, ConnectionClosedEvent} = require("mongodb");
+const {MongoClient, ConnectionClosedEvent, Collection} = require("mongodb");
 const { restart } = require("nodemon");
-const axios = require ("axios")
+const axios = require ("axios");
+const { response } = require("express");
 
 require("dotenv").config();
 const {API_KEY} = process.env
@@ -42,17 +43,49 @@ const getStream = async (req,res) => {
         },
         params: req.query
       };
-      
       const response = await axios.request(apiOptions)
-      console.log(response)
-          console.log(response.data);
           response ? res.status(200).json({status: 200, message: "shows found", data: response.data.results})
           : res.status(404).json({status: 404, message: "nothing found"})
     } catch(error) {
         return console.log(error)
     }
 }
-
+const getManyStreams = async (req,res) => {
+    let services = req.query.service
+    services = services.slice(1, -1)
+    let array = services.split(",")
+    let requestArray = []
+    let responseArray = []
+    array.forEach(element => {requestArray.push(
+        axios.request(
+        {url: 'https://streaming-availability.p.rapidapi.com/search/basic',
+            headers: {
+                'X-RapidAPI-Host': 'streaming-availability.p.rapidapi.com',
+                'X-RapidAPI-Key': API_KEY
+            },
+            params: {
+                country: req.query.country, 
+                service: element, 
+                type: req.query.type, 
+                keyword: req.query.keyword, 
+                page: 1, 
+                output_language: "en", 
+                language: "en"
+            }
+        }
+        )
+    )})
+    try {
+        Promise.all(requestArray).then((data)=>{
+            const fullResults = data.forEach(element => responseArray.push(...element.data.results))            
+            // const fullResults = data.forEach(element.length > 0 ? element => {responseArray.push(...element.data.results)} : undefined)
+            responseArray ? res.status(200).json({status: 200, message: "shows found", data: responseArray})
+            : res.status(404).json({status: 404, message: "nothing found"})
+        })
+        } catch(error) {
+        return console.log(error)
+    }
+}
 //this function is a simple retreival not a search. It requires the exact imdbID 
 //in the params, as well as tv or movie. Params are countryCode, series/movie, and the imdbID, all strings
 const getOne = async (req,res) => {
@@ -83,5 +116,6 @@ const getOne = async (req,res) => {
 module.exports = {
     getServicesAPI,
     getStream,
-    getOne
+    getOne,
+    getManyStreams
 };

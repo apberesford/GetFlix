@@ -18,9 +18,10 @@ const SearchBar = () => {
   const fetchShows = async (e) => {
     try {
       //passes the information to the backend
-      const fetchResult = await fetch(`/show?country=${params.country}&service=${params.service}&type=${params.type}&keyword=${params.keyword}&page=2&output_language=en&language=en`)
+      const fetchResult = await fetch(`/show?country=${params.country}&service=${params.service}&type=${params.type}&keyword=${params.keyword}&page=1&output_language=en&language=en`)
       const data = await fetchResult.json()
       // and saves the response in state to use
+      console.log(data.data)
         setSearchData(data.data)
     } catch (error) {
       console.log(error)
@@ -30,18 +31,19 @@ const SearchBar = () => {
   //this function is called if the services are an array (i.e. several services 
   //are being searched at once). It promises all the returns since I didn't want 
   //to pay for the premium API, and this is an acceptable workaround at small scale
-  // const fetchManyShows = async (e) => {
-  //   try {
-  //     //passes the information to the backend
-  //     const fetchResult = await fetch(`/show?country=${params.country}&service=${params.service}&type=${params.type}&keyword=${params.keyword}&page=1&output_language=en&language=en`)
-  //     const data = await fetchResult.json()
-  //     // and saves the response in state to use
-  //       setSearchData(data.data)
-  //   } catch (error) {
-  //     console.log(error)
-  //   };
-  //   setIsSearching(false)
-  // } 
+  const fetchManyShows = async (e) => {
+    try {
+      //passes the information to the backend
+      const fetchResult = await fetch(`/multistream/?country=${params.country}&service=${params.service}&type=${params.type}&keyword=${params.keyword}&page=1&output_language=en&language=en`)
+      const data = await fetchResult.json()
+      // and saves the response in state to use
+      setSearchData(data.data)
+        console.log(data.data)
+    } catch (error) {
+      console.log(error)
+    };
+    setIsSearching(false)
+  } 
   //a button to clear search params
   const clearChanges = () => {
     setParams({
@@ -73,16 +75,17 @@ const SearchBar = () => {
     });
   }, [])
   useEffect(() => {
-    if (!params.country || !params.service || !params.type || !params.keyword) {return console.log("insufficient info")}
+    if (!params.country || !params.service || !params.type || !params.keyword) {return undefined}
     if (isSearching === false) {return undefined}
     if (typeof params.service === "string") {
       fetchShows()
       .then(setIsSearching(false))
+    } else {
+      fetchManyShows()
+      .then(setIsSearching(false))
     }
-    // else {fetchManyShows()
-    //   .then(setIsSearching(false))
-    // }
   }, [isSearching]);
+  console.log(params)
   return (
     <>
       <Row>
@@ -95,7 +98,7 @@ const SearchBar = () => {
         {isSearching === true ? (<p>Searching</p>
         ) : (
           <>
-          <Button id="search" onClick={()=>setIsSearching(true)} style={{backgroundColor: "green"}}>S</Button>
+          <Button id="search" disabled={isSearching || !params.country || !params.service || !params.type || !params.keyword } onClick={()=>setIsSearching(true)} style={{backgroundColor: "green"}}>S</Button>
           <Button id="clear" onClick={clearChanges} style={{backgroundColor: "red"}}>C</Button>
           </>
         )}
@@ -148,7 +151,7 @@ const SearchBar = () => {
             <>searching</>
           ) : (
           searchData.length === 0 ? (
-            <div>no data</div>
+            <></>
           ) : (
             <div>
               some data
@@ -160,6 +163,7 @@ const SearchBar = () => {
                   country={params.country}
                   service={params.service}
                   type={params.type}
+                  countryCode={userState.countryCode}
                 />
                 )
               })}
@@ -171,7 +175,10 @@ const SearchBar = () => {
     </>
   );
 };
-const Row = styled.div``;
+const Row = styled.div`
+  margin: 1em
+
+`;
 const SearchBox = styled.input`
   width: clamp(100px, 80%, 800px);
   margin: .5em;

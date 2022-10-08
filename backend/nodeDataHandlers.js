@@ -19,7 +19,7 @@ const options ={
 
 //gets=========================================================================
 //get services checks the region the user is in, then sets the possible 
-//services to check. I'm using this using constants on the frontend for now, 
+//services to check. I'm populating this using constants on the frontend for now, 
 //because the data is static and non-sensitive and doing so improves performance.
 //If the service was going live, these two gets would double check the information 
 //(maybe weekly?) to keep the website current.
@@ -42,8 +42,8 @@ const getServicesDb = async (req,res) => {
         client.close();
     }
 }
-//Same deal here, but for countries...
 
+//Same deal here, but for countries...
 const getCountries = async (req,res) => {
     console.log(MONGO_URI)
     const client = new MongoClient(MONGO_URI, options)
@@ -120,7 +120,7 @@ const updateList = async (req,res) => {
         else { 
             const show = await db.collection("users").findOne({_id: req.body._id, shows: {$elemMatch: {imdbID: req.body.item.imdbID}}})
             if (!show) {
-                await db.collection("users").updateOne({_id: req.body._id}, {$push: {shows: {...req.body.item, isWatched: true, tags: []}}}, {upsert: true})
+                await db.collection("users").updateOne({_id: req.body._id}, {$push: {shows: {...req.body.item, isWatched: false, tags: ""}}}, {upsert: true})
                 await res.status(200).json({status: 200, message: "show added!"})
             }
             else {
@@ -138,7 +138,6 @@ const updateList = async (req,res) => {
 //adds the boolean "read" to shows to indicate the user has watched them.   
 const isWatched = async (req,res) => {
     const client = new MongoClient(MONGO_URI, options)
-    if (!req.body._id || !req.body.imdbID) {return res.status(400).json({status: 400, message: "not enough data", data: req.body})}
     try {
         await client.connect();
         const db = client.db("GetFlix")
@@ -148,13 +147,8 @@ const isWatched = async (req,res) => {
             const show = await db.collection("users").findOne({_id: req.body._id, shows: {$elemMatch: {imdbID: req.body.imdbID}}})
             if (!show) {res.status(404).json({ status: 404, data: "no show found" })} 
             else {
-                if (show.shows[0].isWatched === true) {
-                    await db.collection("users").updateOne({_id: req.body._id, shows: {$elemMatch: {imdbID: req.body.imdbID}}}, {$set: {"shows.$.isWatched": false}})
+                    await db.collection("users").updateOne({_id: req.body._id, shows: {$elemMatch: {imdbID: req.body.imdbID}}}, {$set: {"shows.$.isWatched": req.body.isWatched}})
                      res.status(200).json({status: 200, message: "status updated!"})
-                } else {       
-                    const pushresult = await db.collection("users").updateOne({_id: req.body._id, shows: {$elemMatch: {imdbID: req.body.imdbID}}}, {$set: {"shows.$.isWatched": true}}, {$upsert: true})
-                     res.status(200).json({status: 200, message: "status updated!"})
-                    }
                 }
         } 
     } catch (error) {
@@ -175,6 +169,7 @@ const updateTags = async (req, res) => {
         if (!user) {res.status(404).json({ status: 404, data: "no user found" })} 
         else { 
             const show = await db.collection("users").findOne({_id: req.body._id, shows: {$elemMatch: {imdbID: req.body.imdbID}}})
+            console.log(show)
             if (!show) {res.status(404).json({ status: 404, data: "no show found" })} 
             else {
                     await db.collection("users").updateOne({_id: req.body._id, shows: {$elemMatch: {imdbID: req.body.imdbID}}}, {$set: {"shows.$.tags": req.body.tags}}, {upsert: true})

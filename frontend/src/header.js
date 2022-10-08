@@ -34,22 +34,28 @@ const Header = () => {
 
     return (
             user ?  
-        <>
+        <HeaderWrapper>
             <Linky to={`/Profile`}>Profile</Linky>
             <Logout />
-        </>
+        </HeaderWrapper>
             :
-        <>
+        <HeaderWrapper>
             <Login />
-        </>
+        </HeaderWrapper>
     )
 }
 
 const Linky = styled(NavLink)`
-  text-decoration: none;
-  color: black;
   padding: 1em;
-  &.active {color: red;}
+  color: gray;
+  text-decoration: none;
+  &.active {color: whitesmoke;};
+`;
+const HeaderWrapper = styled.div`
+  position: fixed;
+  bottom: 2em;
+  right: 2em;
+
 `;
 
 export default Header;
