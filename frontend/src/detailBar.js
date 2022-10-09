@@ -24,8 +24,7 @@ const DetailBar = ({ result }) => {
       return undefined;
     }
     setIsWatched(false);
-    const body = { _id: userState._id, imdbID: result.imdbID, isWatched: colour };
-    console.log(body)
+    const body = { _id: userState._id, imdbID: result.imdbID, isWatched: !colour };
     const index = userState.shows.findIndex((o) => {
       return o.imdbID === result.imdbID;
     });

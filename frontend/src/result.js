@@ -1,13 +1,13 @@
 import { SiteContext } from "./context";
-import { useContext, useEffect, useState } from "react";
+import { useContext} from "react";
 import styled from "styled-components";
-import { Link, useNavigate } from "react-router-dom";
-
-import SearchBar from "./searchBar.js";
+import { Link } from "react-router-dom";
 import ActionBar from "./actionbar";
 
-const Result = ({ result, resultId, country, countryCode, service, type }) => {
-  const { userState, searchData } = useContext(SiteContext);
+const Result = ({ result, country, service, type }) => {
+  const { userState } = useContext(SiteContext);
+  //these little shortcuts allow some conditional styling, and translate a few weird spots in
+  //the api where the names of equivalent value keys are changed for no reason (tv = series)
   let isWatched = result.isWatched
   let medium = "";
   if (type === "series") {
@@ -19,6 +19,7 @@ const Result = ({ result, resultId, country, countryCode, service, type }) => {
     <>
     <Wrapper 
     >
+      {/* This passes some information down to the little bar appended to the result with bookmark and link options */}
       <DetailLink
         watched={isWatched}
         to={`/details/${country}/${medium}/${result.tmdbID}`}
@@ -32,29 +33,48 @@ const Result = ({ result, resultId, country, countryCode, service, type }) => {
           src={result.posterURLs.original}
           alt={`release poster for ${result.title}`}
           />
-        <span>
+          <Info>
+        <Title>
           {result.title} ({result.year})
-        </span>
+        </Title>
+        {!result.tags ? (<></>):(
+        <Overview>tagged with: {result.tags} </Overview>)}
         {!result.seasons ? (
           <></>
           ) : (
-            <span>
+            <div>
             {result.seasons} seasons, {result.episodes} episodes total
-          </span>
-        )}
+          </div>
+
+)}
+          </Info>
       </DetailLink>
-    </Wrapper>
       {userState?._id ? <><ActionBar result={result} service={service}/></> : <></>}
+    </Wrapper>
             </>
   );
 };
 
 const Wrapper = styled.div`
     justify-content: space-around;
+  display: flex;
+	flex-direction: row;
+	justify-content: left;
+  width: 80%;
+  padding: 1em;
     
     `;
+const Info = styled.div`
+  display: flex;
+  justify-content: space-around;
+  flex-direction: column;
+
+`;
 const Poster = styled.img`
   height: 100px;
+  border-radius: 5px;
+  padding-right: 1em;
+
   `;
 const DetailLink = styled(Link)`
 opacity: ${props => props.watched ? .2 : 1};
@@ -63,10 +83,15 @@ opacity: ${props => props.watched ? .2 : 1};
 	display: flex;
 	flex-direction: row;
 	flex-wrap: wrap;
-	justify-content: flex-start;
-	align-items: baseline;
-	align-content: flex-start;
+  width: 80%;
 `;
-const LittleLink = styled.span`
+const Title = styled.div`
+font-size: 1.2em;
 `;
+const Overview = styled.span`
+font-size: .8em;
+opacity: .4;
+
+`;
+
 export default Result;

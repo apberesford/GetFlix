@@ -5,6 +5,7 @@ import { COUNTRIES, SERVICES } from "./CONSTANTS";
 // import StyledSuggestions from "./StyledSuggestions";
 import Result from "./result";
 import { SiteContext } from "./context";
+import { BsTrash2Fill, BsSearch } from "react-icons/bs";
 
 
 //the list of movies in a users list will always be visible, and the searchbar
@@ -12,8 +13,7 @@ import { SiteContext } from "./context";
 const MyLibrary = () => {
   const { userState } = useContext(SiteContext)
   const [filterParams, setFilterParams] = useState("")
-  console.log(userState)
-const handleChange = (e) => {
+  const handleChange = (e) => {
   setFilterParams(e.target.value)
   
 }
@@ -35,7 +35,7 @@ return (
     <>
         <Row>
             <SearchBox id="keyword" type="text" value={filterParams} onChange={handleChange}/>
-            <Button id="clear" onClick={clearChanges} style={{backgroundColor: "red"}}>C</Button>
+            <Clear id="clear" onClick={clearChanges}>C</Clear>
         </Row>
         <Row>
         {uniqueSuggestions.map((result) => {
@@ -55,17 +55,22 @@ return (
 }
 
 const Row = styled.div`
-  margin: 1em`;
+  margin: 1em;`;
 const Button = styled.button`
   height: 2em;
   width: 2em;
   border-radius: 50%;
   border: none;
-  margin: .5em
+  margin: .5em;
   `;
 const SearchBox = styled.input`
   width: clamp(100px, 80%, 800px);
   margin: .5em;
   `;
+  const Clear = styled(BsTrash2Fill)`
+  margin-right: 0.5rem;
+  cursor: pointer;
+  opacity: ${props => props.disabled ? .2 : 1}
+`;
 
 export default MyLibrary

@@ -28,7 +28,7 @@ const getServicesAPI = async (req, res) => {
         response ? res.status(200).json({status: 200, message: "regional data", data: response.results})
         : res.status(404).json({status: 404, message: "nothing found"})
     } catch(error)  {
-        return console.log(error)
+        return error
     }
 }
 
@@ -47,7 +47,7 @@ const getStream = async (req,res) => {
           response ? res.status(200).json({status: 200, message: "shows found", data: response.data.results})
           : res.status(404).json({status: 404, message: "nothing found"})
     } catch(error) {
-        return console.log(error)
+        return error
     }
 }
 const getManyStreams = async (req,res) => {
@@ -68,7 +68,7 @@ const getManyStreams = async (req,res) => {
                 service: element, 
                 type: req.query.type, 
                 keyword: req.query.keyword, 
-                page: 1, 
+                page: "1", 
                 output_language: "en", 
                 language: "en"
             }
@@ -77,13 +77,17 @@ const getManyStreams = async (req,res) => {
     )})
     try {
         Promise.all(requestArray).then((data)=>{
-            const fullResults = data.forEach(element => responseArray.push(...element.data.results))            
-            // const fullResults = data.forEach(element.length > 0 ? element => {responseArray.push(...element.data.results)} : undefined)
+            // console.log(data)
+            data.forEach(element => console.log(element.data.results, "81"))
+            data.forEach(element => responseArray.push(...element.data.results))           
+            // data.forEach(element => element.length > 0 ? responseArray.push(...element.data.results) : console.log("empty array"))
             responseArray ? res.status(200).json({status: 200, message: "shows found", data: responseArray})
             : res.status(404).json({status: 404, message: "nothing found"})
+            .catch(err => console.log(err))
+            // (console.log(responseArray))
         })
         } catch(error) {
-        return console.log(error)
+        return error
     }
 }
 //this function is a simple retreival not a search. It requires the exact imdbID 
@@ -100,11 +104,10 @@ const getOne = async (req,res) => {
         params: request
       };
       const response = await axios.request(apiOptions)
-      console.log(response.data)
           response ? res.status(200).json({status: 200, message: "shows found", data: response.data})
           : res.status(404).json({status: 404, message: "nothing found"})
     } catch (error) {
-        return console.log(error)
+        return error
     }
 }
 

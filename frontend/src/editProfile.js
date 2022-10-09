@@ -2,25 +2,24 @@ import { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
 import { COUNTRIES, SERVICES } from "./CONSTANTS";
 import { SiteContext } from "./context";
+import { BsTrash2Fill, BsSaveFill } from "react-icons/bs";
 
 
 //a pretty barebones edit profile page. This allows the user to "preset" a 
 //country and list of services they use to speed up searches.
 const EditProfile = () => {
-  const {userState, error, setError} = useContext(SiteContext)
-  const [profileParams, setProfileParams] = useState({_id: userState._id, country: userState.country, countryCode: userState.countryCode, subscriptions: userState.subscriptions})
+  const {userState, profileParams, setProfileParams} = useContext(SiteContext)
+  // const [profileParams, setProfileParams] = useState({})
   const [newArray, setNewArray] = useState([])
   const [click, setClick] = useState(false)
   const [cancel, setCancel] = useState(false)
   //handles the change of country in the dropdown window, so the user can set a country.
-  console.log(userState)
   const handleChangeList = (e) => {
-
     setProfileParams({
       ...profileParams,
-      ["country"]: e.target[e.target.selectedIndex].innerText,
-      ["countryCode"]: e.target.value,
-      ["subscriptions"]: userState.subscriptions
+      country: e.target[e.target.selectedIndex].innerText,
+      countryCode: e.target.value,
+      subscriptions: userState.subscriptions
     });
   }
   //handles the checkboxes of available services, so the user can set their services.
@@ -37,52 +36,55 @@ const EditProfile = () => {
   }
   //this use effect watches when boxes are unchecked, to set the 
   //profileParams.subscriptions without stale setting interfering 
+  //initial on load
   useEffect(() => {
     setProfileParams(userState)
   }, [])
+
+  //setting subscriptions, including in backend
   useEffect(() => {
     setProfileParams({...profileParams, ["subscriptions"]: newArray})
   }, [newArray]);
   useEffect(() => {
-    console.log(profileParams)
-    if (click === false) {return console.log("done")}
+    const request = {...profileParams, _id: userState._id}
+    if (click === false) {return undefined}
     fetch('/updateUser', {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(profileParams)
+      body: JSON.stringify(request)
     })
     .then((res) => res.json())
     setClick(false)
   }, [click])
+
+  //clear changes
   useEffect(() => {
-    if (cancel === false) {return console.log("done")}
+    if (cancel === false) {return undefined}
     setProfileParams({country: userState.country, countryCode: userState.countryCode, subscriptions: userState.subscriptions})
     setCancel(false)
   }, [cancel])
+  console.log(profileParams)
     return (
-        <>
+        <Wrapper>
         <p>Select a country</p>
         <Select id="country" 
-        value={""} 
+        value={!profileParams.country ? ("") : (profileParams.country)} 
         key={""} onChange={handleChangeList}>
-          <Item value={""} disabled>SELECT A COUNTRY</Item>
-          {/* Adds the country code which already exists for the user, if one does at the top of the list */}
-          {/* {userState.country ? (<Item key={userState.countryCode} value={userState.countryCode}>{userState.country}</Item> */}
-        {/* ) : (<></>)} */}
+          <option value={""} disabled>SELECT A COUNTRY</option>
             {COUNTRIES.map((country) => {
                 //This map is finding all the countries from the data set. The data
                 //is hardcoded and stored on the front end because the API doesn't
                 //have a way of retreiving it on load, and it isn't sensitive.
                 //The key is the standard 2 digit country code.
                 return (
-                  <Item key={country.code} value={country.code}>
+                  <option key={country.code} value={country.code}>
                     {country.country}
-                  </Item> 
+                  </option> 
                 );
             })}
         </Select>
-          <Button id="save" onClick={()=>{setClick(true)}} style={{backgroundColor: "green"}}>Save Changes</Button>
-          <Button id="clear" onClick={()=>{setCancel(true)}} style={{backgroundColor: "red"}}>Cancel Changes</Button>
+          <Save id="save" onClick={()=>{setClick(true)}} size={20}/>
+          <Clear id="clear" onClick={()=>{setCancel(true)}} size={20}/>
         <div>
             {SERVICES.filter((service) => {
               //Services rerenders when the country changes, and filters based on 
@@ -98,30 +100,32 @@ const EditProfile = () => {
               return ( 
                 <span key={unique} >
                 <Check id={unique} type={"checkbox"} label={profileParams.subscriptions} checked={checked ? 'checked' : ""}onChange={handleChangeCheck}/>
-                <Label> {unique} </Label>
+                <span> {unique} </span>
                 </span>
               );
             })}
           </div>
-        </>
+        </Wrapper>
       )
   }
-  
+const Wrapper = styled.div`
+  margin: 1em`;
 const Select = styled.select`
   margin: 1em;
   `;
-const Item = styled.option``;
-const Label = styled.span``;
 const Check = styled.input`
   margin: 1em;
   `;
-const Button = styled.button`
-  height: 2em;
-  width: 2em;
-  border-radius: 50%;
-  border: none;
-  margin: .5em
-  `;
+  const Clear = styled(BsTrash2Fill)`
+margin-right: 0.5rem;
+cursor: pointer;
+`;
+const Save = styled(BsSaveFill)`
+margin-right: 1rem;
+margin-left: 1.5rem;
+cursor: pointer;  
+`;
+
 
 
 

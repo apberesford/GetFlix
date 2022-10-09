@@ -11,6 +11,8 @@ export const UserContext = ({children}) => {
     const [error, setError] = useState(false)
     const [userState, setUserState] = useState(null)
     const [searchData, setSearchData] = useState([])
+    const [profileParams, setProfileParams] = useState({})
+
       //This is the model params which will be passed to the API for the search.
     const [params, setParams] = useState({
       country: "",
@@ -27,7 +29,8 @@ return (
         error, setError,
         userState, setUserState,
         searchData, setSearchData,
-        params, setParams
+        params, setParams,
+        profileParams, setProfileParams,
       }}
     >
       {children}

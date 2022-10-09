@@ -45,7 +45,6 @@ const getServicesDb = async (req,res) => {
 
 //Same deal here, but for countries...
 const getCountries = async (req,res) => {
-    console.log(MONGO_URI)
     const client = new MongoClient(MONGO_URI, options)
     try {
         await client.connect();
@@ -69,7 +68,6 @@ const getCurrentUser = async (req,res) => {
         await client.connect();
         const db = client.db("GetFlix")
         let result = await db.collection("users").findOne({_id: req.params.user})
-        console.log(result)
         if (!result) {const newUser = {_id: req.params.user, country: "", countryCode: "", subscriptions: [], shows: []}
             await db.collection("users").insertOne(newUser)
                 res.status(200).json({status: 200, message: "new user created", data: newUser})}
@@ -81,6 +79,8 @@ const getCurrentUser = async (req,res) => {
         client.close();
     }
 }
+
+
 //update user sets changes made to country and subscriptions in the database so 
 //logged in users can quickly make searches of the services they own. Users who 
 //haven't set country or subscriptions can use this to do so, since Mongo will 
@@ -95,7 +95,6 @@ const updateUser = async (req,res) => {
         if (!user) {res.status(404).json({ status: 404, data: "no user found" })} 
         else { 
            const id = req.body._id
-           console.log(req.body)
            await db.collection("users").updateOne({_id: id}, {$set: {country: req.body.country}}, {upsert: true})
            await db.collection("users").updateOne({_id: id}, {$set: {countryCode: req.body.countryCode}}, {upsert: true})
            await db.collection("users").updateOne({_id: id}, {$set: {subscriptions: req.body.subscriptions}}, {upsert: true})
@@ -107,6 +106,8 @@ const updateUser = async (req,res) => {
         client.close();
     }
 }
+
+
 //updates shows adds or removes shows that the user wants to have in their 
 //library of shows
 const updateList = async (req,res) => {
@@ -135,9 +136,12 @@ const updateList = async (req,res) => {
     }
 
 }
+
+
 //adds the boolean "read" to shows to indicate the user has watched them.   
 const isWatched = async (req,res) => {
     const client = new MongoClient(MONGO_URI, options)
+    if (!req.body._id || !req.body.imdbID) {return res.status(400).json({status: 400, message: "not enough data", data: req.body})}
     try {
         await client.connect();
         const db = client.db("GetFlix")
@@ -147,7 +151,7 @@ const isWatched = async (req,res) => {
             const show = await db.collection("users").findOne({_id: req.body._id, shows: {$elemMatch: {imdbID: req.body.imdbID}}})
             if (!show) {res.status(404).json({ status: 404, data: "no show found" })} 
             else {
-                    await db.collection("users").updateOne({_id: req.body._id, shows: {$elemMatch: {imdbID: req.body.imdbID}}}, {$set: {"shows.$.isWatched": req.body.isWatched}})
+                    await db.collection("users").updateOne({_id: req.body._id, shows: {$elemMatch: {imdbID: req.body.imdbID}}}, {$set: {"shows.$.isWatched": req.body.isWatched}}, {upsert: true})
                      res.status(200).json({status: 200, message: "status updated!"})
                 }
         } 
@@ -157,6 +161,8 @@ const isWatched = async (req,res) => {
         client.close();
     }
 }
+
+
 //updates an array being added to each show object "tags" which allows the user 
 //to group, filter, and find shows based on the tags
 const updateTags = async (req, res) => {
@@ -169,7 +175,6 @@ const updateTags = async (req, res) => {
         if (!user) {res.status(404).json({ status: 404, data: "no user found" })} 
         else { 
             const show = await db.collection("users").findOne({_id: req.body._id, shows: {$elemMatch: {imdbID: req.body.imdbID}}})
-            console.log(show)
             if (!show) {res.status(404).json({ status: 404, data: "no show found" })} 
             else {
                     await db.collection("users").updateOne({_id: req.body._id, shows: {$elemMatch: {imdbID: req.body.imdbID}}}, {$set: {"shows.$.tags": req.body.tags}}, {upsert: true})

@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { COUNTRIES, SERVICES } from "./CONSTANTS";
 import { useEffect, useState, useContext } from "react";
 import { SiteContext } from "./context";
+import { BsTrash2Fill, BsSearch } from "react-icons/bs";
+
 
 
 import Result from "./result";
@@ -18,13 +20,12 @@ const SearchBar = () => {
   const fetchShows = async (e) => {
     try {
       //passes the information to the backend
-      const fetchResult = await fetch(`/show?country=${params.country}&service=${params.service}&type=${params.type}&keyword=${params.keyword}&page=1&output_language=en&language=en`)
+      const fetchResult = await fetch(`/show?country=${params.country}&service=[${params.service}]&type=${params.type}&keyword=${params.keyword}&page=1&output_language=en&language=en`)
       const data = await fetchResult.json()
       // and saves the response in state to use
-      console.log(data.data)
         setSearchData(data.data)
     } catch (error) {
-      console.log(error)
+      return error
     };
     setIsSearching(false)
   }
@@ -33,28 +34,27 @@ const SearchBar = () => {
   //to pay for the premium API, and this is an acceptable workaround at small scale
   const fetchManyShows = async (e) => {
     try {
+      // console.log(`/multistream/?country=${params.country}&service=[${params.service}]&type=${params.type}&keyword=${params.keyword}&page=1&output_language=en&language=en`)
       //passes the information to the backend
-      const fetchResult = await fetch(`/multistream/?country=${params.country}&service=${params.service}&type=${params.type}&keyword=${params.keyword}&page=1&output_language=en&language=en`)
+                                      ///multistream/?country=ca&service=[netflix,prime]&type=movie&keyword=vampire&page=1&output_language=en&language=en
+      const fetchResult = await fetch(`/multistream/?country=${params.country}&service=[${params.service}]&type=${params.type}&keyword=${params.keyword}&page=1&output_language=en&language=en`)
+      // const fetchResult = await fetch(request)
       const data = await fetchResult.json()
       // and saves the response in state to use
       setSearchData(data.data)
-        console.log(data.data)
     } catch (error) {
-      console.log(error)
+      return error
     };
     setIsSearching(false)
   } 
-  //a button to clear search params
+  // //a button to clear search params
   const clearChanges = () => {
     setParams({
-      country: "",
-      service: "",
+      ...params,
       type: "",
       keyword: "",
-      page: "1",
-      output_language: "en",
-      language: "en",
     });
+    setSearchData([])
   };
   //This keeps the params object up to date with user inputs
   const handleChange = (e) => {
@@ -62,6 +62,7 @@ const SearchBar = () => {
       ...params,
       [e.target.id]: e.target.value,
     });
+    console.log(params)
   };
   useEffect(() =>{
     setParams({
@@ -75,17 +76,16 @@ const SearchBar = () => {
     });
   }, [])
   useEffect(() => {
-    if (!params.country || !params.service || !params.type || !params.keyword) {return undefined}
+    if (!params.country || !params.service || !params.type || !params.keyword) {setIsSearching(false); return undefined}
     if (isSearching === false) {return undefined}
     if (typeof params.service === "string") {
       fetchShows()
-      .then(setIsSearching(false))
+      setIsSearching(false)
     } else {
       fetchManyShows()
-      .then(setIsSearching(false))
+      setIsSearching(false)
     }
   }, [isSearching]);
-  console.log(params)
   return (
     <>
       <Row>
@@ -94,12 +94,12 @@ const SearchBar = () => {
           type="text"
           value={params.keyword}
           onChange={handleChange}
-        ></SearchBox>
+          ></SearchBox>
         {isSearching === true ? (<p>Searching</p>
         ) : (
           <>
-          <Button id="search" disabled={isSearching || !params.country || !params.service || !params.type || !params.keyword } onClick={()=>setIsSearching(true)} style={{backgroundColor: "green"}}>S</Button>
-          <Button id="clear" onClick={clearChanges} style={{backgroundColor: "red"}}>C</Button>
+          <Enter id="search" size={20} disabled={isSearching || !params.country || !params.service || !params.type || !params.keyword } onClick={()=>setIsSearching(true)}></Enter>
+          <Clear id="clear" size={20} disabled={!params.country && !params.service && !params.type && !params.keyword }onClick={clearChanges}></Clear>
           </>
         )}
 
@@ -107,12 +107,12 @@ const SearchBar = () => {
       <Row>
         <div>
           <Select id="type" value={params.type} onChange={handleChange}>
-            <Item> SELECT</Item>
-            <Item key={"movie"}>movie</Item>
-            <Item key={"series"}>series</Item>
+            <option> SELECT</option>
+            <option key={"movie"}>movie</option>
+            <option key={"series"}>series</option>
           </Select>
           <Select id="country" value={!params.country ? (""):(params.country )} onChange={handleChange}>
-            {userState?.country ? <Item key="myCountry" value={userState.countryCode}>{userState.country}</Item> : <Item value="">Select a country</Item>} 
+            {userState?.country ? <option key="myCountry" value={userState.countryCode}>{userState.country}</option> : <option value="">Select a country</option>} 
             {/* {!userState.country ? (<></>) : (<Item key={userState.countryCode}>{userState.country}</Item>)} */}
             {COUNTRIES.map((country) => {
               //This map is finding all the countries from the data set. The data
@@ -120,14 +120,14 @@ const SearchBar = () => {
               //have a way of retreiving it on load, and it isn't sensitive.
               //The key is the standard 2 digit country code.
               return (
-                <Item key={country.code} value={country.code}>
+                <option key={country.code} value={country.code}>
                   {country.country}
-                </Item>
+                </option>
               );
             })}
           </Select>
           <Select id="service" value={params.service} onChange={handleChange}>
-            {userState?.subscriptions ? <Item key="mySubs" value={userState.subscriptions}>My Services</Item> : <Item value="">Select a service</Item>}
+            {userState?.subscriptions ? <option key="mySubs" value={userState.subscriptions}>My Services</option> : <option value="">Select a service</option>}
             {/* Set this up so that once there's a function to check multiple services in one go */}
             {/* {userState.subscriptions ? <Item key={1} value={1}>My Subscriptions</Item> : <></>}  */}
             {SERVICES.filter((service) => {
@@ -138,35 +138,35 @@ const SearchBar = () => {
               }
             }).map((e) => {
               return (
-                <Item
-                  key={Object.keys(e).toString()}
-                  value={Object.keys(e).toString()}
+                <option
+                key={Object.keys(e).toString()}
+                value={Object.keys(e).toString()}
                 >
                   {Object.keys(e).toString()}
-                </Item>
+                </option>
               );
             })}
           </Select>
           {isSearching ? (
             <>searching</>
-          ) : (
-          searchData.length === 0 ? (
-            <></>
-          ) : (
-            <div>
+            ) : (
+              searchData.length === 0 ? (
+                <></>
+                ) : (
+                  <div>
               some data
             {searchData.map((result) => {
               return (
                 <Result 
-                  key={result.imdbID}
+                key={result.imdbID}
                   result={result}
                   country={params.country}
                   service={params.service}
                   type={params.type}
                   countryCode={userState.countryCode}
-                />
-                )
-              })}
+                  />
+                  )
+                })}
             </div>
           )
           )}
@@ -176,23 +176,41 @@ const SearchBar = () => {
   );
 };
 const Row = styled.div`
-  margin: 1em
-
-`;
+  margin: 1em;
+  
+  `;
 const SearchBox = styled.input`
   width: clamp(100px, 80%, 800px);
   margin: .5em;
   `;
-const Button = styled.button`
-  height: 2em;
-  width: 2em;
-  border-radius: 50%;
-  border: none;
-  margin: .5em;
-  `;
 const Select = styled.select`
-  margin: 1em
+  margin: 1em;
   `;
-const Item = styled.option``;
-
-export default SearchBar;
+const Clear = styled(BsTrash2Fill)`
+  margin-right: 0.5rem;
+  cursor: pointer;
+  opacity: ${props => props.disabled ? .2 : 1}
+  `;
+  const Enter = styled(BsSearch)`
+  margin-right: 0.5rem;
+  cursor: pointer;  
+  opacity: ${props => props.disabled ? .2 : 1}
+  `;
+  export default SearchBar;
+  
+  //   const fetchManyShows = (e) => {
+  //     const finalArray = []
+  //     try {
+  //       params.service.forEach(element => {
+  //         new Promise(fetchShows())
+  //         .then((data)=>{
+  //           if (data.data.length > 0) {data.data.forEach(element => {
+  //             finalArray.push(element)
+  //           })}
+  //           console.log(finalArray)
+  //       });
+  //     })
+  //     } catch(error) {
+  //     return console.log(error)
+  //   }
+  // }
