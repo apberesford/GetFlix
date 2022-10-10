@@ -40,21 +40,71 @@ const Details = ({service, country}) => {
         !displayedItem?.tmdbID ? (
             <>we couldn't find anything here</>
         ) : (
+            <>
+            {/* <Wrapper style={{backgroundImage: `url(${displayedItem.backdropURLs.original})`, backgroundRepeat:"no-repeat", opacity: .1 }}> */}
             <Wrapper>
+                <BackgroundImage src={displayedItem.backdropURLs.original} />
                 <Poster src={displayedItem.posterURLs.original} alt={`poster for ${displayedItem.title}`}/>
-                <LittleLink onClick={(ev) => {ev.preventDefault(); window.open(displayedItem.streamingInfo[service][country].link)}}>{service}</LittleLink>
-                <>A show! Here's some more information {displayedItem.tmdbID}</>        
-                {!userState._id ? <></> : <><ActionBar result={displayedItem}/><DetailBar result={displayedItem}/></>}
+                <Info>
+                    <Title>{displayedItem.originalTitle} ({displayedItem.year})</Title>
+                    <Item>{displayedItem.tagline}</Item>
+                    <Item>{displayedItem.overview}</Item>
+                    <Item>Featuring: {displayedItem.cast.map((element)=>{return(<span>{element}, </span>)})} {displayedItem.significants.map((element)=>{return(<span>{element}, </span>)})}</Item>
+                    {!displayedItem?.seasons ? (<Item>{displayedItem.runtime} minutes</Item>):(<Item>{displayedItem.seasons} seasons, {displayedItem.episodes} episodes</Item>)}
+                </Info>
+                <Actions>
+                    <ActionBar result={displayedItem}/>
+                    <span onClick={(ev) => {ev.preventDefault(); window.open(displayedItem.streamingInfo[service][country].link)}}>{service}</span>
+                </Actions>        
             </Wrapper>
+                {!userState._id ? <></> : <><DetailBar result={displayedItem}/></>}
+            </>
         )
     )
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.div`  
+    overflow: hidden;  
+    width: 100vw;
+    min-height: 200px;
+	display: flex;
+	flex-wrap: wrap;
+    flex-direction: row;
+    `;
+const BackgroundImage = styled.img`
+    z-index: -1;
+    position: absolute;
+    /* height: clamp(50%, 600px, 100%); */
+    width: 100%;
+    opacity: .1
+`;
+const Info = styled.div`	
+    padding: 1em;
+    width: clamp(50%, 600px, 50%);
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+
+`;
+const Actions = styled.div`
+    padding: 1em;
+    width: clamp(10%, 100px, 10%);
+    position: absolute;
+    right: 0;
+    top: 75px;
+`;
+const Item = styled.span`
+    padding: .5em;
 `
 const Poster = styled.img`
-    height: 500px;
+    width: clamp(30%, 250px, 30%);
+    border-radius: 20px;
+    padding: 1em;
+
 `;
-const LittleLink = styled.div`
+const Title = styled.div`
+    padding: 1em;
+    font-size: 1.5em;
+
 `;
 export default Details;

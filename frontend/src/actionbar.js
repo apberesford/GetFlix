@@ -58,12 +58,10 @@ const ActionBar = ({result, service}) => {
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: left;
   align-items: center;
 `;
 const BookmarkFill = styled(BsBookmarksFill)`
   cursor: pointer;
-  /* font-size: 25px; */
   margin-right: 0.5rem;
   color: #c29346;
   padding-bottom: 1em;

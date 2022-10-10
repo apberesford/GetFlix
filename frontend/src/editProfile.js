@@ -8,7 +8,7 @@ import { BsTrash2Fill, BsSaveFill } from "react-icons/bs";
 //a pretty barebones edit profile page. This allows the user to "preset" a 
 //country and list of services they use to speed up searches.
 const EditProfile = () => {
-  const {userState, profileParams, setProfileParams} = useContext(SiteContext)
+  const {userState, profileParams, setProfileParams, params} = useContext(SiteContext)
   // const [profileParams, setProfileParams] = useState({})
   const [newArray, setNewArray] = useState([])
   const [click, setClick] = useState(false)
@@ -63,18 +63,18 @@ const EditProfile = () => {
     setProfileParams({country: userState.country, countryCode: userState.countryCode, subscriptions: userState.subscriptions})
     setCancel(false)
   }, [cancel])
-  console.log(profileParams)
+  console.log(profileParams.country)
     return (
         <Wrapper>
-        <p>Select a country</p>
+        <p>Select a country:</p>
         <Select id="country" 
         value={!profileParams.country ? ("") : (profileParams.country)} 
         key={""} onChange={handleChangeList}>
-          <option value={""} disabled>SELECT A COUNTRY</option>
+          {profileParams?.country ? <option key="myCountry" value={profileParams.countryCode}>{profileParams.country}</option> : <option value={""} disabled>SELECT A COUNTRY</option>}
             {COUNTRIES.map((country) => {
                 //This map is finding all the countries from the data set. The data
                 //is hardcoded and stored on the front end because the API doesn't
-                //have a way of retreiving it on load, and it isn't sensitive.
+                //have many pings, and it isn't sensitive.
                 //The key is the standard 2 digit country code.
                 return (
                   <option key={country.code} value={country.code}>
@@ -85,6 +85,7 @@ const EditProfile = () => {
         </Select>
           <Save id="save" onClick={()=>{setClick(true)}} size={20}/>
           <Clear id="clear" onClick={()=>{setCancel(true)}} size={20}/>
+          <p>Select the services you're subscribed to:</p>
         <div>
             {SERVICES.filter((service) => {
               //Services rerenders when the country changes, and filters based on 
@@ -109,7 +110,7 @@ const EditProfile = () => {
       )
   }
 const Wrapper = styled.div`
-  margin: 1em`;
+  margin: 1em;`;
 const Select = styled.select`
   margin: 1em;
   `;

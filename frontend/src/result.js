@@ -72,7 +72,7 @@ const Info = styled.div`
 `;
 const Poster = styled.img`
   height: 100px;
-  border-radius: 5px;
+  border-radius: 2px;
   padding-right: 1em;
 
   `;

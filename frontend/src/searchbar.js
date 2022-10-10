@@ -36,9 +36,7 @@ const SearchBar = () => {
     try {
       // console.log(`/multistream/?country=${params.country}&service=[${params.service}]&type=${params.type}&keyword=${params.keyword}&page=1&output_language=en&language=en`)
       //passes the information to the backend
-                                      ///multistream/?country=ca&service=[netflix,prime]&type=movie&keyword=vampire&page=1&output_language=en&language=en
       const fetchResult = await fetch(`/multistream/?country=${params.country}&service=[${params.service}]&type=${params.type}&keyword=${params.keyword}&page=1&output_language=en&language=en`)
-      // const fetchResult = await fetch(request)
       const data = await fetchResult.json()
       // and saves the response in state to use
       setSearchData(data.data)
@@ -86,6 +84,7 @@ const SearchBar = () => {
       setIsSearching(false)
     }
   }, [isSearching]);
+  console.log(searchData)
   return (
     <>
       <Row>
@@ -189,12 +188,12 @@ const Select = styled.select`
 const Clear = styled(BsTrash2Fill)`
   margin-right: 0.5rem;
   cursor: pointer;
-  opacity: ${props => props.disabled ? .2 : 1}
+  opacity: ${props => props.disabled ? .2 : 1};
   `;
   const Enter = styled(BsSearch)`
   margin-right: 0.5rem;
   cursor: pointer;  
-  opacity: ${props => props.disabled ? .2 : 1}
+  opacity: ${props => props.disabled ? .2 : 1};
   `;
   export default SearchBar;
   
