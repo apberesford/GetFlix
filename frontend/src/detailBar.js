@@ -1,23 +1,25 @@
 import React, { useEffect, useState, useContext } from "react";
 import { BsFillCameraReelsFill, BsFillTagFill } from "react-icons/bs";
 
-import Action from "./action";
+
 import styled from "styled-components";
 import { SiteContext } from "./context";
 
 const DetailBar = ({ result }) => {
-  const { userState, searchData, setUserState } = useContext(SiteContext);
+  const { userState, setUserState } = useContext(SiteContext);
   const [tags, setTags] = useState(result.tags);
   const [confirmTags, setConfirmTags] = useState(false);
   const [isWatched, setIsWatched] = useState(false);
   const [colour, setColour] = useState(false)
+  
   const handleChange = (e) => {
     setTags(e.target.value);
   };
+  //this toggle supports the useEffect to update whether the show is watched or not, giving an up to
+  //date boolean to the second useEffect and also affecting the rendering on the page.
   useEffect(() => {if (userState.isWatched === true) {setColour(true)}}, []);
+
   // Updates both the state and backend, adding or subtracting a show from my watched list.
-  
-  
   //toggles a show to be isWatched or not
   useEffect(() => {
     if (isWatched === false) {
@@ -62,6 +64,8 @@ const DetailBar = ({ result }) => {
         body: JSON.stringify(body),
       }).then((res) => res.json());
   }, [confirmTags]);
+
+  
   return (
     <Wrapper>
       <SearchBox

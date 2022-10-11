@@ -2,11 +2,10 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  Redirect
 } from "react-router-dom";
 import styled from "styled-components";
 import { useAuth0 } from "@auth0/auth0-react";
-import { useState, useContext } from "react";
+import { useContext } from "react";
 import GlobalStyle from './globalStyles';
 
 import { SiteContext } from "./context";
@@ -23,7 +22,6 @@ const App = () => {
   //is not particularly dependant on security or social aspects. For now, when
   //a user is logged in some features are unlocked, but no encryption has been added.
   const { user } = useAuth0();
-  const { userState } = useContext(SiteContext)
 
   user ? sessionStorage.setItem("currentUser", `${user.email}`)
     : sessionStorage.removeItem("currentUser")

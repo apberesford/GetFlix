@@ -57,15 +57,19 @@ express()
 
 //Db stuff=====================================================================
 //gets
-//service/country stuff. Mostly unused in this build, but necessary for live.
+//service/country stuff. rarely used in this build, but necessary for live.
 .get('/servicesDb', getServicesDb)
 .get('/countriesDb', getCountries)
-//user stuff
+//user stuff. .get fires on login
 .get('/currentUser/:user', getCurrentUser)
+//this updates the user from the edit profile page
 .patch('/updateUser', updateUser)
 //show stuff
+//adds users shows to the db in mongo
 .patch('/updateList', updateList)
+//edits the tags, giving the user the ability to group shows by categories 
 .patch('/updateTags', updateTags)
+//switches the value "iswatched" for saved movies, which affects how the shows appear
 .patch('/isWatched', isWatched)
 
 //=============================================================================

@@ -2,18 +2,17 @@ import React from "react";
 import { useAuth0 } from "@auth0/auth0-react";
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useContext } from "react";
 
 import Logout from './logout'
 import Login from './login';
-import EditProfile from './editProfile'
 import { SiteContext } from "./context";
 
 const Header = () => {
   //pretty self explanatory. The profile page allows the user to change user
   //object for things which are not hardcoded at creation.
   const { user } = useAuth0()
-  const { userState, setUserState, setError, setParams } = useContext(SiteContext);
+  const { setUserState, setError } = useContext(SiteContext);
 
     //I dont love this if, but it crashes if I don't use it... It also seems to mean that it never updates?
     useEffect(() =>{

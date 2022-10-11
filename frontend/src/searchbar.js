@@ -13,14 +13,23 @@ import Result from "./result";
 //collection
 const SearchBar = () => {
   //This is based on Auth0
-  const { userState, searchData, setSearchData, params, setParams } = useContext(SiteContext);
+  const { userState, searchData, setSearchData } = useContext(SiteContext);
+  const [params, setParams] = useState({
+    country: "",
+    service: "",
+    type: "",
+    keyword: "",
+    page: "1",
+    output_language: "en",
+    language: "en",
+  });
   //Failsafe to prevent repeat searches
   const [isSearching, setIsSearching] = useState(false)
   //This async function confirms the shape of the data
   const fetchShows = async (e) => {
     try {
       //passes the information to the backend
-      const fetchResult = await fetch(`/show?country=${params.country}&service=[${params.service}]&type=${params.type}&keyword=${params.keyword}&page=1&output_language=en&language=en`)
+      const fetchResult = await fetch(`/show/?country=${params.country}&service=[${params.service}]&type=${params.type}&keyword=${params.keyword}&page=1&output_language=en&language=en`)
       const data = await fetchResult.json()
       // and saves the response in state to use
         setSearchData(data.data)
@@ -34,7 +43,6 @@ const SearchBar = () => {
   //to pay for the premium API, and this is an acceptable workaround at small scale
   const fetchManyShows = async (e) => {
     try {
-      // console.log(`/multistream/?country=${params.country}&service=[${params.service}]&type=${params.type}&keyword=${params.keyword}&page=1&output_language=en&language=en`)
       //passes the information to the backend
       const fetchResult = await fetch(`/multistream/?country=${params.country}&service=[${params.service}]&type=${params.type}&keyword=${params.keyword}&page=1&output_language=en&language=en`)
       const data = await fetchResult.json()
@@ -60,7 +68,6 @@ const SearchBar = () => {
       ...params,
       [e.target.id]: e.target.value,
     });
-    console.log(params)
   };
   useEffect(() =>{
     setParams({
@@ -76,15 +83,14 @@ const SearchBar = () => {
   useEffect(() => {
     if (!params.country || !params.service || !params.type || !params.keyword) {setIsSearching(false); return undefined}
     if (isSearching === false) {return undefined}
-    if (typeof params.service === "string") {
-      fetchShows()
-      setIsSearching(false)
-    } else {
+    // if (typeof params.service === "string") {
+    //   fetchShows()
+    //   setIsSearching(false)
+    // } else {
       fetchManyShows()
       setIsSearching(false)
-    }
+    // }
   }, [isSearching]);
-  console.log(searchData)
   return (
     <>
       <Row>
@@ -127,8 +133,6 @@ const SearchBar = () => {
           </Select>
           <Select id="service" value={params.service} onChange={handleChange}>
             {userState?.subscriptions ? <option key="mySubs" value={userState.subscriptions}>My Services</option> : <option value="">Select a service</option>}
-            {/* Set this up so that once there's a function to check multiple services in one go */}
-            {/* {userState.subscriptions ? <Item key={1} value={1}>My Subscriptions</Item> : <></>}  */}
             {SERVICES.filter((service) => {
               //Services rerenders when the country changes, and filters based on 
               //services available in the region.
@@ -197,19 +201,3 @@ const Clear = styled(BsTrash2Fill)`
   `;
   export default SearchBar;
   
-  //   const fetchManyShows = (e) => {
-  //     const finalArray = []
-  //     try {
-  //       params.service.forEach(element => {
-  //         new Promise(fetchShows())
-  //         .then((data)=>{
-  //           if (data.data.length > 0) {data.data.forEach(element => {
-  //             finalArray.push(element)
-  //           })}
-  //           console.log(finalArray)
-  //       });
-  //     })
-  //     } catch(error) {
-  //     return console.log(error)
-  //   }
-  // }

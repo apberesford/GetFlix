@@ -15,6 +15,9 @@ const Result = ({ result, country, service, type }) => {
   } else {
     medium = "movie";
   }
+  const serviceKey = Object.keys(result.streamingInfo)[0]
+  const countryKey = Object.keys(result.streamingInfo[serviceKey])[0]
+  const link = result.streamingInfo[serviceKey][countryKey].link
   return (
     <>
     <Wrapper 
@@ -49,7 +52,11 @@ const Result = ({ result, country, service, type }) => {
 )}
           </Info>
       </DetailLink>
-      {userState?._id ? <><ActionBar result={result} service={service}/></> : <></>}
+      {userState?._id ? <><ActionBar result={result} service={service} serviceKey={serviceKey}/></> 
+        :<div onClick={(ev) => {
+        ev.preventDefault()
+        window.open(link);
+      }}>{serviceKey}</div>}
     </Wrapper>
             </>
   );

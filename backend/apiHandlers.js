@@ -14,7 +14,7 @@ const {API_KEY} = process.env
 //=============================================================================
 //all of these handlers ping the API. don't mess it up!========================
 
-//get services: on a regular update cycle, ping the server to get a list of the services available in each country.
+//get services: on a regular update cycle, ping the server to get a list of the services available in each country. This can update CONSTANTS when necessary.
 const getServicesAPI = async (req, res) => {
     try {
         const apiOptions = {
@@ -32,7 +32,7 @@ const getServicesAPI = async (req, res) => {
     }
 }
 
-//get stream, this should try to find a show from the api server
+//get stream, this should try to find a show from the api server. The request body is {country: string, keyword: string, service: string, type: string}
 const getStream = async (req,res) => {
     try {
     const apiOptions = {
@@ -50,6 +50,10 @@ const getStream = async (req,res) => {
         return error
     }
 }
+
+//get ManyStreams only works for logged in users, and returns multiple promises, one for each service. This
+//would not be necessary with the premium version of the API, this is a workaround... otherwise it works like 
+//getstream. The request body is {country: string, keyword: string, service: array, type: string}
 const getManyStreams = async (req,res) => {
     let services = req.query.service
     services = services.slice(1, -1)
@@ -77,21 +81,20 @@ const getManyStreams = async (req,res) => {
     )})
     try {
         Promise.all(requestArray).then((data)=>{
-            // console.log(data)
-            data.forEach(element => console.log(element.data.results, "81"))
             data.forEach(element => responseArray.push(...element.data.results))           
-            // data.forEach(element => element.length > 0 ? responseArray.push(...element.data.results) : console.log("empty array"))
             responseArray ? res.status(200).json({status: 200, message: "shows found", data: responseArray})
             : res.status(404).json({status: 404, message: "nothing found"})
             .catch(err => console.log(err))
-            // (console.log(responseArray))
         })
         } catch(error) {
         return error
     }
 }
+
 //this function is a simple retreival not a search. It requires the exact imdbID 
-//in the params, as well as tv or movie. Params are countryCode, series/movie, and the imdbID, all strings
+//in the params, as well as tv or movie. Params are countryCode, series/movie, and the imdbID, all strings.
+//This is mainly used in the detail page to grab the exact request. I currently have it disabled to avoid hitting
+//the server all the time
 const getOne = async (req,res) => {
     const request = {country: req.params.countryCode, tmdb_id: `${req.params.type}/${req.params.tmdbID}`, output_language: "en"}
     try {

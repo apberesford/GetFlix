@@ -1,11 +1,8 @@
-import { useState, useContext, useEffect } from "react";
-import { UNSAFE_DataRouterStateContext } from "react-router-dom";
+import { useState, useContext } from "react";
 import styled from "styled-components";
-import { COUNTRIES, SERVICES } from "./CONSTANTS";
-// import StyledSuggestions from "./StyledSuggestions";
 import Result from "./result";
 import { SiteContext } from "./context";
-import { BsTrash2Fill, BsSearch } from "react-icons/bs";
+import { BsTrash2Fill } from "react-icons/bs";
 
 
 //the list of movies in a users list will always be visible, and the searchbar
@@ -56,13 +53,7 @@ return (
 
 const Row = styled.div`
   margin: 1em;`;
-const Button = styled.button`
-  height: 2em;
-  width: 2em;
-  border-radius: 50%;
-  border: none;
-  margin: .5em;
-  `;
+
 const SearchBox = styled.input`
   width: clamp(100px, 80%, 800px);
   margin: .5em;

@@ -25,15 +25,17 @@ const Details = ({service, country}) => {
         if (typeof myShows === "object") {setDisplayedItem(myShows)}}
         else {setFindingItem(true)}
     }, [])
-    //finally we grab the show off the api by it's id.
-    // useEffect(() => {
-    //     setFindingItem(false)
-    //     fetch(`/details/${paramArray[0]}/${paramArray[1]}/${paramArray[2]}`)
-    //     .then((res) => res.json())
-    //     .then(data => {
-    //         setDisplayedItem(data.data)
-    //     })
-    // }, [findingItem])
+    //finally we grab the show off the api by it's id. This one generally doesn't fire unless
+    //the user manually enters a show number in, so it's more meant as a catch for the first 
+    //two cases.
+    useEffect(() => {
+        setFindingItem(false)
+        fetch(`/details/${paramArray[0]}/${paramArray[1]}/${paramArray[2]}`)
+        .then((res) => res.json())
+        .then(data => {
+            setDisplayedItem(data.data)
+        })
+    }, [findingItem])
     //if displayedItem is still null at this point, the page loads an error. 
     //otherwise, the show loads with more details than you get on the list item.
     return ( 
@@ -41,7 +43,6 @@ const Details = ({service, country}) => {
             <>we couldn't find anything here</>
         ) : (
             <>
-            {/* <Wrapper style={{backgroundImage: `url(${displayedItem.backdropURLs.original})`, backgroundRepeat:"no-repeat", opacity: .1 }}> */}
             <Wrapper>
                 <BackgroundImage src={displayedItem.backdropURLs.original} />
                 <Poster src={displayedItem.posterURLs.original} alt={`poster for ${displayedItem.title}`}/>
@@ -74,9 +75,8 @@ const Wrapper = styled.div`
 const BackgroundImage = styled.img`
     z-index: -1;
     position: absolute;
-    /* height: clamp(50%, 600px, 100%); */
     width: 100%;
-    opacity: .1
+    opacity: .1;
 `;
 const Info = styled.div`	
     padding: 1em;

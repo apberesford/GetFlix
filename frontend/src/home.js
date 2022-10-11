@@ -1,11 +1,12 @@
 import { useAuth0 } from "@auth0/auth0-react";
-import React, { useEffect, useState, useContext }  from "react";
+import React, { useEffect, useContext }  from "react";
 import styled from "styled-components";
 import { NavLink } from "react-router-dom";
 import { SiteContext } from "./context";
 
+//This is the landing page, both on login and logout.
 const Home = () => {  
-  const { userState, searchData, setUserState, setError } = useContext(SiteContext);
+  const { setUserState, setError } = useContext(SiteContext);
   const { user } = useAuth0()
   useEffect(() =>{
     if (user) {

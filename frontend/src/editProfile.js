@@ -34,7 +34,7 @@ const EditProfile = () => {
       });
     }
   }
-  //this use effect watches when boxes are unchecked, to set the 
+  //these use effect watches when boxes are unchecked, to set the 
   //profileParams.subscriptions without stale setting interfering 
   //initial on load
   useEffect(() => {
@@ -63,7 +63,6 @@ const EditProfile = () => {
     setProfileParams({country: userState.country, countryCode: userState.countryCode, subscriptions: userState.subscriptions})
     setCancel(false)
   }, [cancel])
-  console.log(profileParams.country)
     return (
         <Wrapper>
         <p>Select a country:</p>

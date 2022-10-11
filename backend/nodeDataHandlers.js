@@ -43,6 +43,7 @@ const getServicesDb = async (req,res) => {
     }
 }
 
+
 //Same deal here, but for countries...
 const getCountries = async (req,res) => {
     const client = new MongoClient(MONGO_URI, options)
@@ -58,6 +59,8 @@ const getCountries = async (req,res) => {
         client.close();
     }
 }
+
+
 //=============================================================================
 //get current user: fires at login and logout to feed state, and when the user 
 //discards changes on the profile page. sets the userState to match the database 
