@@ -83,6 +83,7 @@ const SearchBar = () => {
   useEffect(() => {
     if (!params.country || !params.service || !params.type || !params.keyword) {setIsSearching(false); return undefined}
     if (isSearching === false) {return undefined}
+    //fetchShows works well, but mainly exists to reduce pings in accidental situations. 
     // if (typeof params.service === "string") {
     //   fetchShows()
     //   setIsSearching(false)
